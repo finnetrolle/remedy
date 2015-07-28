@@ -1,0 +1,17 @@
+package ru.trollsmedjan.remedy.model.dao;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import ru.trollsmedjan.remedy.model.entity.Campaign;
+import ru.trollsmedjan.remedy.model.entity.Primary;
+
+import java.util.List;
+
+/**
+ * Created by finnetrolle on 29.07.2015.
+ */
+public interface PrimaryRepository extends JpaRepository<Primary, Long> {
+
+    List<Primary> findByCampaign(Campaign campaign);
+
+    Primary findByNameAndCampaign(String name, Campaign campaign);
+}

@@ -14,10 +14,7 @@ import ru.trollsmedjan.remedy.dto.input.BaseBeaconData;
 import ru.trollsmedjan.remedy.dto.input.CreateBeaconDTO;
 import ru.trollsmedjan.remedy.dto.input.EngageBeaconDTO;
 import ru.trollsmedjan.remedy.model.entity.*;
-import ru.trollsmedjan.remedy.service.BeaconService;
-import ru.trollsmedjan.remedy.service.CampaignService;
-import ru.trollsmedjan.remedy.service.EntoserService;
-import ru.trollsmedjan.remedy.service.SpaceService;
+import ru.trollsmedjan.remedy.service.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +26,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/beacons")
 public class BeaconResource {
+
+    @Autowired
+    private PrimaryService primaryService;
 
     @Autowired
     private SpaceService spaceService;
@@ -176,6 +176,11 @@ public class BeaconResource {
             return getBadRequest();
         }
 
+        Primary primary = primaryService.get(createBeaconDTO.getPrimaryId());
+        if (primary == null) {
+            return getBadRequest();
+        }
+
         if (!location.getConstellation().equals(campaign.getConstellation())) {
             return getBadRequest();
         }
@@ -184,6 +189,7 @@ public class BeaconResource {
         }
 
         Beacon beacon = new Beacon();
+        beacon.setPrimary(primary);
         beacon.setAffectingSystem(affectingOn);
         beacon.setCampaign(campaign);
         beacon.setLocation(location);
@@ -193,8 +199,9 @@ public class BeaconResource {
         return new ResponseEntity<BeaconDTO>(createBeaconDTO(beacon), HttpStatus.OK);
     }
 
-    private BeaconDTO createBeaconDTO(Beacon beacon) {
+    public static BeaconDTO createBeaconDTO(Beacon beacon) {
         BeaconDTO beaconDTO = new BeaconDTO();
+        beaconDTO.setPrimary(beacon.getPrimary().getName());
         beaconDTO.setId(beacon.getId());
         beaconDTO.setLocation(new SolarSystemDTO(beacon.getLocation().getName()));
         beaconDTO.setAffectingSystem(new SolarSystemDTO(beacon.getAffectingSystem().getName()));

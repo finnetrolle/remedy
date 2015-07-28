@@ -11,6 +11,16 @@ public class CreateBeaconDTO extends BaseData {
 
     private String affectingSystem;
 
+    private long primaryId;
+
+    public long getPrimaryId() {
+        return primaryId;
+    }
+
+    public void setPrimaryId(long primaryId) {
+        this.primaryId = primaryId;
+    }
+
     public String getName() {
         return name;
     }

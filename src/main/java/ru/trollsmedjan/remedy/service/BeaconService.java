@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.trollsmedjan.remedy.model.dao.BeaconRepository;
 import ru.trollsmedjan.remedy.model.entity.Beacon;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
+import ru.trollsmedjan.remedy.model.entity.Primary;
 
 import java.util.List;
 
@@ -31,5 +32,9 @@ public class BeaconService {
 
     public List<Beacon> getBeacons(Campaign campaign) {
         return beaconRepository.findByCampaign(campaign);
+    }
+
+    public List<Beacon> getBeacons(Primary primary) {
+        return beaconRepository.findByPrimary(primary);
     }
 }

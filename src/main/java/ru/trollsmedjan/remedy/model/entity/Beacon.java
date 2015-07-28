@@ -16,6 +16,9 @@ public class Beacon {
     @ManyToOne
     private Campaign campaign;
 
+    @ManyToOne
+    private Primary primary;
+
     private String name;
 
     @ManyToOne
@@ -33,6 +36,14 @@ public class Beacon {
     private long startTime;
 
     private long timeToCapture;
+
+    public Primary getPrimary() {
+        return primary;
+    }
+
+    public void setPrimary(Primary primary) {
+        this.primary = primary;
+    }
 
     public Campaign getCampaign() {
         return campaign;

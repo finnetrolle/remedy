@@ -29,6 +29,7 @@ public class SwaggerConfig  {
                         ,"/entosers.*"
                         ,"/campaign.*"
                         ,"/monitoring.*"
+                        ,"/primary.*"
 //                        ,"/constellations.*"
 //                        ,"/solarsystems.*"
                 );

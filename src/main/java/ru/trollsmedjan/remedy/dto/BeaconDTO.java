@@ -23,15 +23,26 @@ public class BeaconDTO {
 
     private long timeToCapture;
 
-    public BeaconDTO(long id, String name, SolarSystemDTO location, SolarSystemDTO affectingSystem, BeaconStatus status, String entoser, long startTime, long timeToCapture) {
-        this.id = id;
+    private String primary;
+
+    public String getPrimary() {
+        return primary;
+    }
+
+    public void setPrimary(String primary) {
+        this.primary = primary;
+    }
+
+    public BeaconDTO(String name, long id, SolarSystemDTO location, SolarSystemDTO affectingSystem, BeaconStatus status, String entoser, long startTime, long timeToCapture, String primary) {
         this.name = name;
+        this.id = id;
         this.location = location;
         this.affectingSystem = affectingSystem;
         this.status = status;
         this.entoser = entoser;
         this.startTime = startTime;
         this.timeToCapture = timeToCapture;
+        this.primary = primary;
     }
 
     public BeaconDTO() {
