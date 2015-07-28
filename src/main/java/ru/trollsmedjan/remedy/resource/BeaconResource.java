@@ -15,6 +15,9 @@ import ru.trollsmedjan.remedy.service.CampaignService;
 import ru.trollsmedjan.remedy.service.EntoserService;
 import ru.trollsmedjan.remedy.service.SpaceService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Created by finnetrolle on 28.07.2015.
  */
@@ -121,12 +124,28 @@ public class BeaconResource {
             return getBadRequest();
         }
         beacon.setStatus(BeaconStatus.WARMINGUP);
+        beacon.setEntoser(entoser);
         beacon.setStartTime(System.currentTimeMillis());
         beacon.setTimeToCapture(getEndTime(beacon.getStartTime(), entoser.isT2EntosisModule(), entoser.isCapitalShip(), 2.5F));
         entoser.setEngaging(beacon);
         beaconService.save(beacon);
         entoserService.save(entoser);
         return new ResponseEntity<BeaconDTO>(HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{campaignid}")
+    public @ResponseBody
+    ResponseEntity<List<BeaconDTO>> getBeacons(@PathVariable Long campaignid) {
+        Campaign campaign = campaignService.getCampaign(campaignid);
+        if (campaign == null) {
+            return new ResponseEntity<List<BeaconDTO>>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<List<BeaconDTO>>(beaconService.getBeacons(campaign).stream()
+                .map(b -> {
+                    return createBeaconDTO(b);
+                })
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
