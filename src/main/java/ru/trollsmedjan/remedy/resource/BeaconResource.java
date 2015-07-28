@@ -156,7 +156,7 @@ public class BeaconResource {
         beacon.setStatus(BeaconStatus.WARMINGUP);
         beacon.setEntoser(entoser);
         beacon.setStartTime(System.currentTimeMillis());
-        beacon.setTimeToCapture(getEndTime(beacon.getStartTime(), entoser.isT2EntosisModule(), entoser.isCapitalShip(), 2.5F));
+        beacon.setTimeToCapture(beacon.getStartTime() + BeaconUtils.getTimeToEntose(entoser.isT2EntosisModule(), entoser.isCapitalShip(), 2.5));
         entoser.setEngaging(beacon);
         beaconService.save(beacon);
         entoserService.save(entoser);
