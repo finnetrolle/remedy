@@ -1,5 +1,9 @@
 package ru.trollsmedjan.remedy.resource;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +25,9 @@ import java.util.stream.Collectors;
 /**
  * Created by finnetrolle on 28.07.2015.
  */
+@Api(basePath = "/beacons", value = "beacons", description = "Operations with Beacons", produces = "application/json")
 @RestController
-@RequestMapping("/beacons")
+@RequestMapping(value = "/beacons")
 public class BeaconResource {
 
     @Autowired
@@ -37,6 +42,11 @@ public class BeaconResource {
     @Autowired
     private BeaconService beaconService;
 
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Remove beacon", notes = "Remove beacon")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad input data"),
+            @ApiResponse(code = 201, message = "") })
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<BeaconDTO> removeBeacon(@RequestBody BaseBeaconData baseBeaconData) {

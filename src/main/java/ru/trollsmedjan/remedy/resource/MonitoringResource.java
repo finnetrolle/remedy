@@ -1,18 +1,17 @@
 package ru.trollsmedjan.remedy.resource;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import com.wordnik.swagger.annotations.Api;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by finnetrolle on 27.07.2015.
  */
+@Api(basePath = "/monitoring", value = "Monitoring", description = "monitoring!", produces = "application/json")
 @RestController
 @RequestMapping("/monitoring")
 public class MonitoringResource {
 
-    @RequestMapping
+    @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     MonitoringResponse monitoring() {
         return new MonitoringResponse();

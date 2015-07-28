@@ -1,5 +1,6 @@
 package ru.trollsmedjan.remedy.resource;
 
+import com.wordnik.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 /**
  * Created by finnetrolle on 28.07.2015.
  */
+@Api(basePath = "/entosers", value = "Entosers", description = "Operations with entosers", produces = "application/json")
 @RestController
 @RequestMapping("/entosers")
 public class EntoserResource {
