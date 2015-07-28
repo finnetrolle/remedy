@@ -91,13 +91,33 @@ public class BeaconResource {
         beacon.setTimeToCapture(0);
         beacon.setStartTime(0);
 
-        beaconService.delete(beacon);
+        beaconService.save(beacon);
         return new ResponseEntity<BeaconDTO>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/defended", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<BeaconDTO> defendBeacon(@RequestBody BaseBeaconData baseBeaconData) {
+        Beacon beacon = beaconService.getBeacon(baseBeaconData.getBeaconId());
+        if (beacon == null) {
+            return getBadRequest();
+        }
+        Campaign campaign = campaignService.getCampaign(baseBeaconData.getCampaignId());
+        if (campaign == null) {
+            return getBadRequest();
+        }
+
+        beacon.setStatus(BeaconStatus.EMPTY);
+        beacon.setTimeToCapture(0);
+        beacon.setStartTime(0);
+
+        beaconService.save(beacon);
+        return new ResponseEntity<BeaconDTO>(createBeaconDTO(beacon), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/reportenemyattack", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<BeaconDTO> engageBeacon(@RequestBody BaseBeaconData baseBeaconData) {
+    ResponseEntity<BeaconDTO> reportBeacon(@RequestBody BaseBeaconData baseBeaconData) {
         Beacon beacon = beaconService.getBeacon(baseBeaconData.getBeaconId());
         if (beacon == null) {
             return getBadRequest();
