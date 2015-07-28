@@ -8,13 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.trollsmedjan.remedy.dto.EntoserDTO;
 import ru.trollsmedjan.remedy.dto.input.BaseEntoserData;
 import ru.trollsmedjan.remedy.dto.input.ExtendedEntoserData;
-import ru.trollsmedjan.remedy.model.entity.Beacon;
-import ru.trollsmedjan.remedy.model.entity.BeaconStatus;
-import ru.trollsmedjan.remedy.model.entity.Campaign;
-import ru.trollsmedjan.remedy.model.entity.Entoser;
+import ru.trollsmedjan.remedy.model.entity.*;
 import ru.trollsmedjan.remedy.service.BeaconService;
 import ru.trollsmedjan.remedy.service.CampaignService;
 import ru.trollsmedjan.remedy.service.EntoserService;
+import ru.trollsmedjan.remedy.service.LogService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +24,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/entosers")
 public class EntoserResource {
+
+    @Autowired
+    private LogService logService;
 
     @Autowired
     private EntoserService entoserService;
@@ -58,6 +59,7 @@ public class EntoserResource {
             beaconService.save(beacon);
         }
 
+        logService.info(ActionType.ENTOSER_REMOVE, data.getUsername(), campaign, entoser.toString());
         entoserService.remove(entoser);
 
         return new ResponseEntity<EntoserDTO>(getEntoserDTO(entoser), HttpStatus.OK);
@@ -85,6 +87,7 @@ public class EntoserResource {
         entoser.setShip(data.getShip());
         entoser.setT2EntosisModule(data.isT2EntosisModule());
         entoserService.save(entoser);
+        logService.info(ActionType.ENTOSER_CREATE, data.getUsername(), campaign, entoser.toString());
 
         return new ResponseEntity<EntoserDTO>(getEntoserDTO(entoser), HttpStatus.OK);
     }

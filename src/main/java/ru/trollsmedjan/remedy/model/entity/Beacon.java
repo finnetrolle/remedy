@@ -17,7 +17,7 @@ public class Beacon {
     private Campaign campaign;
 
     @ManyToOne
-    private Primary primary;
+    private PrimaryGoal primaryGoal;
 
     private String name;
 
@@ -37,12 +37,12 @@ public class Beacon {
 
     private long timeToCapture;
 
-    public Primary getPrimary() {
-        return primary;
+    public PrimaryGoal getPrimaryGoal() {
+        return primaryGoal;
     }
 
-    public void setPrimary(Primary primary) {
-        this.primary = primary;
+    public void setPrimaryGoal(PrimaryGoal primaryGoal) {
+        this.primaryGoal = primaryGoal;
     }
 
     public Campaign getCampaign() {
@@ -115,5 +115,19 @@ public class Beacon {
 
     public void setTimeToCapture(long timeToCapture) {
         this.timeToCapture = timeToCapture;
+    }
+
+    @Override
+    public String toString() {
+        return "B{" +
+                ", p=" + primaryGoal +
+                ", n='" + name + '\'' +
+                ", l=" + location +
+                ", a=" + affectingSystem +
+                ", s=" + status +
+                ", e=" + entoser +
+                ", t=" + startTime +
+                ", o=" + timeToCapture +
+                '}';
     }
 }

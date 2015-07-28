@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.trollsmedjan.remedy.dto.BeaconDTO;
-import ru.trollsmedjan.remedy.dto.SolarSystemDTO;
 import ru.trollsmedjan.remedy.dto.input.BaseBeaconData;
 import ru.trollsmedjan.remedy.dto.input.CreateBeaconDTO;
 import ru.trollsmedjan.remedy.dto.input.EngageBeaconDTO;
@@ -42,6 +41,12 @@ public class BeaconResource {
     @Autowired
     private BeaconService beaconService;
 
+    @Autowired
+    private EveSovApiService eveSovApiService;
+
+    @Autowired
+    private LogService logService;
+
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Remove beacon", notes = "Remove beacon")
     @ApiResponses(value = {
@@ -63,8 +68,10 @@ public class BeaconResource {
         if (entoser != null) {
             entoser.setEngaging(null);
             entoserService.save(entoser);
+            logService.info(ActionType.ENTOSER_DISENGAGE, baseBeaconData.getUsername(), campaign, entoser.toString());
         }
 
+        logService.info(ActionType.BEACON_REMOVE, baseBeaconData.getUsername(), campaign, beacon.toString());
         beaconService.delete(beacon);
         return new ResponseEntity<BeaconDTO>(HttpStatus.OK);
     }
@@ -85,13 +92,17 @@ public class BeaconResource {
         if (entoser != null) {
             entoser.setEngaging(null);
             entoserService.save(entoser);
+            logService.info(ActionType.ENTOSER_DISENGAGE, baseBeaconData.getUsername(), campaign, entoser.toString());
         }
+
+
 
         beacon.setStatus(BeaconStatus.EMPTY);
         beacon.setTimeToCapture(0);
         beacon.setStartTime(0);
 
         beaconService.save(beacon);
+        logService.info(ActionType.BEACON_STOP_ENGAGE, baseBeaconData.getUsername(), campaign, beacon.toString());
         return new ResponseEntity<BeaconDTO>(HttpStatus.OK);
     }
 
@@ -112,6 +123,7 @@ public class BeaconResource {
         beacon.setStartTime(0);
 
         beaconService.save(beacon);
+        logService.info(ActionType.BEACON_DEFENDED, baseBeaconData.getUsername(), campaign, beacon.toString());
         return new ResponseEntity<BeaconDTO>(createBeaconDTO(beacon), HttpStatus.OK);
     }
 
@@ -131,10 +143,12 @@ public class BeaconResource {
         if (entoser != null) {
             entoser.setEngaging(null);
             entoserService.save(entoser);
+            logService.info(ActionType.ENTOSER_DISENGAGE, baseBeaconData.getUsername(), campaign, entoser.toString());
         }
 
         beacon.setStatus(BeaconStatus.ATTACKED);
         beaconService.save(beacon);
+        logService.info(ActionType.BEACON_REPORT_ATTACK, baseBeaconData.getUsername(), campaign, beacon.toString());
         return new ResponseEntity<BeaconDTO>(HttpStatus.OK);
     }
 
@@ -156,10 +170,12 @@ public class BeaconResource {
         beacon.setStatus(BeaconStatus.WARMINGUP);
         beacon.setEntoser(entoser);
         beacon.setStartTime(System.currentTimeMillis());
-        beacon.setTimeToCapture(beacon.getStartTime() + BeaconUtils.getTimeToEntose(entoser.isT2EntosisModule(), entoser.isCapitalShip(), 2.5));
+        beacon.setTimeToCapture(beacon.getStartTime() + BeaconUtils.getTimeToEntose(entoser.isT2EntosisModule(), entoser.isCapitalShip(), eveSovApiService.getSystemSecurityModifier("")));
         entoser.setEngaging(beacon);
         beaconService.save(beacon);
+        logService.info(ActionType.BEACON_ENGAGE, engageBeaconDTO.getUsername(), campaign, beacon.toString());
         entoserService.save(entoser);
+        logService.info(ActionType.ENTOSER_ENGAGE, engageBeaconDTO.getUsername(), campaign, entoser.toString());
         return new ResponseEntity<BeaconDTO>(HttpStatus.OK);
     }
 
@@ -196,8 +212,8 @@ public class BeaconResource {
             return getBadRequest();
         }
 
-        Primary primary = primaryService.get(createBeaconDTO.getPrimaryId());
-        if (primary == null) {
+        PrimaryGoal primaryGoal = primaryService.get(createBeaconDTO.getPrimaryId());
+        if (primaryGoal == null) {
             return getBadRequest();
         }
 
@@ -209,19 +225,20 @@ public class BeaconResource {
         }
 
         Beacon beacon = new Beacon();
-        beacon.setPrimary(primary);
+        beacon.setPrimaryGoal(primaryGoal);
         beacon.setAffectingSystem(affectingOn);
         beacon.setCampaign(campaign);
         beacon.setLocation(location);
         beacon.setName(createBeaconDTO.getName());
         beacon.setStatus(BeaconStatus.EMPTY);
         beaconService.save(beacon);
+        logService.info(ActionType.BEACON_CREATE, createBeaconDTO.getUsername(), campaign, beacon.toString());
         return new ResponseEntity<BeaconDTO>(createBeaconDTO(beacon), HttpStatus.OK);
     }
 
     public static BeaconDTO createBeaconDTO(Beacon beacon) {
         BeaconDTO beaconDTO = new BeaconDTO();
-        beaconDTO.setPrimary(beacon.getPrimary().getName());
+        beaconDTO.setPrimary(beacon.getPrimaryGoal().getName());
         beaconDTO.setId(beacon.getId());
         beaconDTO.setLocation(beacon.getLocation().getName());
         beaconDTO.setAffectingSystem(beacon.getAffectingSystem().getName());

@@ -20,10 +20,23 @@ public class LogMessage {
 
     private Date timestamp;
 
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private ActionType action;
 
+    @Column(length = 2000)
     private String description;
+
+    public LogMessage(Campaign campaign, String username, Date timestamp, ActionType action, String description) {
+        this.campaign = campaign;
+        this.username = username;
+        this.timestamp = timestamp;
+        this.action = action;
+        this.description = description;
+    }
+
+    public LogMessage() {
+
+    }
 
     public Long getId() {
         return id;

@@ -43,4 +43,13 @@ public class Campaign {
     public void setConstellation(Constellation constellation) {
         this.constellation = constellation;
     }
+
+    @Override
+    public String toString() {
+        return "Campaign{" +
+                "name='" + name + '\'' +
+                ", constellation=" + constellation +
+                ", id=" + id +
+                '}';
+    }
 }

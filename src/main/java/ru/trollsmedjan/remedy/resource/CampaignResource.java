@@ -9,9 +9,11 @@ import ru.trollsmedjan.remedy.dto.CampaignDTO;
 import ru.trollsmedjan.remedy.dto.ConstellationDTO;
 import ru.trollsmedjan.remedy.dto.input.StartCampaignDTO;
 import ru.trollsmedjan.remedy.dto.input.StopCampaignDTO;
+import ru.trollsmedjan.remedy.model.entity.ActionType;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
 import ru.trollsmedjan.remedy.model.entity.Constellation;
 import ru.trollsmedjan.remedy.service.CampaignService;
+import ru.trollsmedjan.remedy.service.LogService;
 import ru.trollsmedjan.remedy.service.SpaceService;
 
 import javax.annotation.PostConstruct;
@@ -36,6 +38,9 @@ public class CampaignResource {
     private final static String KARER5 = "Karer V";
 
     private final static String FINNETROLLE = "Finne Trolle";
+
+    @Autowired
+    private LogService logService;
 
     @PostConstruct
     private void init() {
@@ -74,6 +79,7 @@ public class CampaignResource {
             return new ResponseEntity<CampaignDTO>(HttpStatus.NOT_FOUND);
         }
         Campaign campaign = campaignService.createNewCampaign(startCampaignDTO.getName(), constellation);
+        logService.info(ActionType.CAMPAIGN_START, startCampaignDTO.getUsername(), campaign, campaign.toString());
         CampaignDTO campaignDTO = new CampaignDTO();
 
         return new ResponseEntity<CampaignDTO>(new CampaignDTO(campaign.getName(), campaign.getConstellation().getName(), campaign.getId()), HttpStatus.OK);
@@ -89,6 +95,7 @@ public class CampaignResource {
         if (campaign == null) {
             return new ResponseEntity<CampaignDTO>(HttpStatus.BAD_REQUEST);
         }
+        logService.info(ActionType.CAMPAING_STOP, stopCampaignDTO.getUsername(), campaign, campaign.toString());
         campaignService.stopCampaign(campaign);
 
         return new ResponseEntity<CampaignDTO>(HttpStatus.OK);

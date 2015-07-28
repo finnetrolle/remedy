@@ -2,9 +2,9 @@ package ru.trollsmedjan.remedy.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.trollsmedjan.remedy.model.dao.PrimaryRepository;
+import ru.trollsmedjan.remedy.model.dao.PrimaryGoalRepository;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
-import ru.trollsmedjan.remedy.model.entity.Primary;
+import ru.trollsmedjan.remedy.model.entity.PrimaryGoal;
 
 import java.util.List;
 
@@ -15,26 +15,26 @@ import java.util.List;
 public class PrimaryService {
 
     @Autowired
-    private PrimaryRepository primaryRepository;
+    private PrimaryGoalRepository primaryGoalRepository;
 
-    public Primary get(long id) {
-        return primaryRepository.findOne(id);
+    public PrimaryGoal get(long id) {
+        return primaryGoalRepository.findOne(id);
     }
 
-    public List<Primary> get(Campaign campaign) {
-        return primaryRepository.findByCampaign(campaign);
+    public List<PrimaryGoal> get(Campaign campaign) {
+        return primaryGoalRepository.findByCampaign(campaign);
     }
 
-    public Primary get(String name, Campaign campaign) {
-        return primaryRepository.findByNameAndCampaign(name, campaign);
+    public PrimaryGoal get(String name, Campaign campaign) {
+        return primaryGoalRepository.findByNameAndCampaign(name, campaign);
     }
 
-    public void save(Primary primary) {
-        primaryRepository.save(primary);
+    public void save(PrimaryGoal primaryGoal) {
+        primaryGoalRepository.save(primaryGoal);
     }
 
-    public void delete(Primary primary) {
-        primaryRepository.delete(primary);
+    public void delete(PrimaryGoal primaryGoal) {
+        primaryGoalRepository.delete(primaryGoal);
     }
 
 

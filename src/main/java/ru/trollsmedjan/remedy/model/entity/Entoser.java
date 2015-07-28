@@ -81,4 +81,17 @@ public class Entoser {
     public void setEngaging(Beacon engaging) {
         this.engaging = engaging;
     }
+
+    @Override
+    public String toString() {
+        return "Entoser{" +
+                "id=" + id +
+                ", campaign=" + campaign +
+                ", name='" + name + '\'' +
+                ", ship='" + ship + '\'' +
+                ", isCapitalShip=" + isCapitalShip +
+                ", isT2EntosisModule=" + isT2EntosisModule +
+                ", engaging=" + engaging +
+                '}';
+    }
 }

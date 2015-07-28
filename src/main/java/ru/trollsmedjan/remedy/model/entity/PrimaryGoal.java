@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
  * Created by finnetrolle on 29.07.2015.
  */
 @Entity
-public class Primary {
+public class PrimaryGoal {
 
     private String name;
 
@@ -34,5 +34,14 @@ public class Primary {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Primary{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                ", campaign=" + campaign +
+                '}';
     }
 }
