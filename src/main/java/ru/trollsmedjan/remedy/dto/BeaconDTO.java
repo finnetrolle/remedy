@@ -11,9 +11,9 @@ public class BeaconDTO {
 
     private String name;
 
-    private SolarSystemDTO location;
+    private String location;
 
-    private SolarSystemDTO affectingSystem;
+    private String affectingSystem;
 
     private BeaconStatus status;
 
@@ -33,9 +33,9 @@ public class BeaconDTO {
         this.primary = primary;
     }
 
-    public BeaconDTO(String name, long id, SolarSystemDTO location, SolarSystemDTO affectingSystem, BeaconStatus status, String entoser, long startTime, long timeToCapture, String primary) {
-        this.name = name;
+    public BeaconDTO(long id, String name, String location, String affectingSystem, BeaconStatus status, String entoser, long startTime, long timeToCapture, String primary) {
         this.id = id;
+        this.name = name;
         this.location = location;
         this.affectingSystem = affectingSystem;
         this.status = status;
@@ -64,19 +64,19 @@ public class BeaconDTO {
         this.name = name;
     }
 
-    public SolarSystemDTO getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(SolarSystemDTO location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
-    public SolarSystemDTO getAffectingSystem() {
+    public String getAffectingSystem() {
         return affectingSystem;
     }
 
-    public void setAffectingSystem(SolarSystemDTO affectingSystem) {
+    public void setAffectingSystem(String affectingSystem) {
         this.affectingSystem = affectingSystem;
     }
 

@@ -203,8 +203,8 @@ public class BeaconResource {
         BeaconDTO beaconDTO = new BeaconDTO();
         beaconDTO.setPrimary(beacon.getPrimary().getName());
         beaconDTO.setId(beacon.getId());
-        beaconDTO.setLocation(new SolarSystemDTO(beacon.getLocation().getName()));
-        beaconDTO.setAffectingSystem(new SolarSystemDTO(beacon.getAffectingSystem().getName()));
+        beaconDTO.setLocation(beacon.getLocation().getName());
+        beaconDTO.setAffectingSystem(beacon.getAffectingSystem().getName());
         beaconDTO.setName(beacon.getName());
         beaconDTO.setStatus(beacon.getStatus());
         if (beaconDTO.getStatus() == BeaconStatus.ENGAGED || beaconDTO.getStatus() == BeaconStatus.WARMINGUP) {
