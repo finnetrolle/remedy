@@ -20,7 +20,7 @@ public class LogService {
     private LogMessageRepository repository;
 
     public void info(ActionType action, String username, Campaign campaign, String description) {
-        LogMessage msg = new LogMessage(campaign, username, new Date(), action, description);
+        LogMessage msg = new LogMessage(campaign, username, new Date(), action, "");
         repository.save(msg);
     }
 }
