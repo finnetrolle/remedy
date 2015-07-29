@@ -4,6 +4,7 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,8 @@ public class BeaconResource {
     @Autowired
     private EveSovApiService eveSovApiService;
 
+    private static final Logger log = Logger.getLogger(BeaconResource.class);
+
     @Autowired
     private LogService logService;
 
@@ -55,12 +58,15 @@ public class BeaconResource {
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<BeaconDTO> removeBeacon(@RequestBody BaseBeaconData baseBeaconData) {
+        log.info("Remove beacon query for " + baseBeaconData);
         Beacon beacon = beaconService.getBeacon(baseBeaconData.getBeaconId());
         if (beacon == null) {
+            log.warn("Beacon is not found");
             return getBadRequest();
         }
         Campaign campaign = campaignService.getCampaign(baseBeaconData.getCampaignId());
         if (campaign == null) {
+            log.warn("Campaign is not found");
             return getBadRequest();
         }
 
@@ -68,9 +74,11 @@ public class BeaconResource {
         if (entoser != null) {
             entoser.setEngaging(null);
             entoserService.save(entoser);
+            log.debug("Updating entoser " + entoser);
             logService.info(ActionType.ENTOSER_DISENGAGE, baseBeaconData.getUsername(), campaign, entoser.toString());
         }
 
+        log.debug("Deleting beacon");
         logService.info(ActionType.BEACON_REMOVE, baseBeaconData.getUsername(), campaign, beacon.toString());
         beaconService.delete(beacon);
         return new ResponseEntity<BeaconDTO>(HttpStatus.OK);
@@ -79,24 +87,27 @@ public class BeaconResource {
     @RequestMapping(value = "/stopengage", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<BeaconDTO> stopEngageBeacon(@RequestBody BaseBeaconData baseBeaconData) {
+        log.info("Stop engaging beacon query for " + baseBeaconData);
         Beacon beacon = beaconService.getBeacon(baseBeaconData.getBeaconId());
         if (beacon == null) {
+            log.warn("Beacon not found");
             return getBadRequest();
         }
         Campaign campaign = campaignService.getCampaign(baseBeaconData.getCampaignId());
         if (campaign == null) {
+            log.warn("Campaign not found");
             return getBadRequest();
         }
 
         Entoser entoser = beacon.getEntoser();
         if (entoser != null) {
             entoser.setEngaging(null);
+            log.debug("Updating entoser " + entoser);
             entoserService.save(entoser);
             logService.info(ActionType.ENTOSER_DISENGAGE, baseBeaconData.getUsername(), campaign, entoser.toString());
         }
 
-
-
+        log.debug("Updating beacon " + beacon);
         beacon.setStatus(BeaconStatus.EMPTY);
         beacon.setTimeToCapture(0);
         beacon.setStartTime(0);
@@ -109,15 +120,19 @@ public class BeaconResource {
     @RequestMapping(value = "/defended", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<BeaconDTO> defendBeacon(@RequestBody BaseBeaconData baseBeaconData) {
+        log.info("Defend beacon query " + baseBeaconData);
         Beacon beacon = beaconService.getBeacon(baseBeaconData.getBeaconId());
         if (beacon == null) {
+            log.warn("beacon not found");
             return getBadRequest();
         }
         Campaign campaign = campaignService.getCampaign(baseBeaconData.getCampaignId());
         if (campaign == null) {
+            log.warn("campaign not found");
             return getBadRequest();
         }
 
+        log.debug("updating beacon " + beacon);
         beacon.setStatus(BeaconStatus.EMPTY);
         beacon.setTimeToCapture(0);
         beacon.setStartTime(0);
@@ -130,22 +145,27 @@ public class BeaconResource {
     @RequestMapping(value = "/reportenemyattack", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<BeaconDTO> reportBeacon(@RequestBody BaseBeaconData baseBeaconData) {
+        log.info("Report enemy attack " + baseBeaconData);
         Beacon beacon = beaconService.getBeacon(baseBeaconData.getBeaconId());
         if (beacon == null) {
+            log.warn("beacon not found");
             return getBadRequest();
         }
         Campaign campaign = campaignService.getCampaign(baseBeaconData.getCampaignId());
         if (campaign == null) {
+            log.warn("campaign not found");
             return getBadRequest();
         }
 
         Entoser entoser = beacon.getEntoser();
         if (entoser != null) {
             entoser.setEngaging(null);
+            log.debug("updating entoser " + entoser);
             entoserService.save(entoser);
             logService.info(ActionType.ENTOSER_DISENGAGE, baseBeaconData.getUsername(), campaign, entoser.toString());
         }
 
+        log.debug("updating beacon " + beacon);
         beacon.setStatus(BeaconStatus.ATTACKED);
         beaconService.save(beacon);
         logService.info(ActionType.BEACON_REPORT_ATTACK, baseBeaconData.getUsername(), campaign, beacon.toString());
@@ -155,22 +175,28 @@ public class BeaconResource {
     @RequestMapping(value = "/engage", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<BeaconDTO> engageBeacon(@RequestBody EngageBeaconDTO engageBeaconDTO) {
+        log.info("engage beacon " + engageBeaconDTO);
         Beacon beacon = beaconService.getBeacon(engageBeaconDTO.getBeaconId());
         if (beacon == null) {
+            log.warn("beacon not found");
             return getBadRequest();
         }
         Campaign campaign = campaignService.getCampaign(engageBeaconDTO.getCampaignId());
         if (campaign == null) {
+            log.warn("campaign not found");
             return getBadRequest();
         }
         Entoser entoser = entoserService.getEntoser(engageBeaconDTO.getEntoser(), campaign);
         if (entoser == null) {
+            log.warn("entoser not found");
             return getBadRequest();
         }
+        log.debug("updating beacon " + beacon);
         beacon.setStatus(BeaconStatus.WARMINGUP);
         beacon.setEntoser(entoser);
         beacon.setStartTime(System.currentTimeMillis());
         beacon.setTimeToCapture(beacon.getStartTime() + BeaconUtils.getTimeToEntose(entoser.isT2EntosisModule(), entoser.isCapitalShip(), eveSovApiService.getSystemSecurityModifier("")));
+        log.debug("updating entoser " + entoser);
         entoser.setEngaging(beacon);
         beaconService.save(beacon);
         logService.info(ActionType.BEACON_ENGAGE, engageBeaconDTO.getUsername(), campaign, beacon.toString());
@@ -182,37 +208,42 @@ public class BeaconResource {
     @RequestMapping(method = RequestMethod.GET, value = "/{campaignid}")
     public @ResponseBody
     ResponseEntity<List<BeaconDTO>> getBeacons(@PathVariable Long campaignid) {
+        log.info("GET beacons for " + campaignid);
         Campaign campaign = campaignService.getCampaign(campaignid);
         if (campaign == null) {
+            log.warn("campaign not found");
             return new ResponseEntity<List<BeaconDTO>>(HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<List<BeaconDTO>>(beaconService.getBeacons(campaign).stream()
-                .map(b -> {
-                    return createBeaconDTO(b);
-                })
+                .map(b -> createBeaconDTO(b))
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<BeaconDTO> createBeacon(@RequestBody CreateBeaconDTO createBeaconDTO) {
+        log.info("create beacon " + createBeaconDTO);
         Campaign campaign = campaignService.getCampaign(createBeaconDTO.getCampaignId());
         if (campaign == null) {
+            log.warn("campaign not found");
             return getBadRequest();
         }
 
         SolarSystem location = spaceService.getSolarSystem(createBeaconDTO.getLocation());
         if (location == null) {
+            log.warn("solar system not found");
             return getBadRequest();
         }
 
         PrimaryGoal primaryGoal = primaryService.get(createBeaconDTO.getPrimaryId());
         if (primaryGoal == null) {
+            log.warn("primary not found");
             return getBadRequest();
         }
 
         if (!location.getConstellation().equals(campaign.getConstellation())) {
+            log.warn("solar system not in campaign's constellation");
             return getBadRequest();
         }
 
@@ -223,6 +254,7 @@ public class BeaconResource {
         beacon.setLocation(location);
         beacon.setName(createBeaconDTO.getName());
         beacon.setStatus(BeaconStatus.EMPTY);
+        log.debug("creating new beacon " + beacon);
         beaconService.save(beacon);
         logService.info(ActionType.BEACON_CREATE, createBeaconDTO.getUsername(), campaign, beacon.toString());
         return new ResponseEntity<BeaconDTO>(createBeaconDTO(beacon), HttpStatus.OK);

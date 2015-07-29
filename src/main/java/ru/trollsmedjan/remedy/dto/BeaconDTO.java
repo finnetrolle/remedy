@@ -100,4 +100,18 @@ public class BeaconDTO {
     public void setTimeToCapture(long timeToCapture) {
         this.timeToCapture = timeToCapture;
     }
+
+    @Override
+    public String toString() {
+        return "BeaconDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", status=" + status +
+                ", entoser='" + entoser + '\'' +
+                ", startTime=" + startTime +
+                ", timeToCapture=" + timeToCapture +
+                ", primary='" + primary + '\'' +
+                '}';
+    }
 }

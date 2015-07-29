@@ -34,4 +34,13 @@ public class StartCampaignDTO {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    @Override
+    public String toString() {
+        return "StartCampaignDTO{" +
+                "name='" + name + '\'' +
+                ", constellation='" + constellation + '\'' +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }

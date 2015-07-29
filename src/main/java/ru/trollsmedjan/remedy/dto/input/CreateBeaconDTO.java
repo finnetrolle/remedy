@@ -35,4 +35,12 @@ public class CreateBeaconDTO extends BaseData {
         this.location = location;
     }
 
+    @Override
+    public String toString() {
+        return "CreateBeaconDTO{" +
+                "name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", primaryId=" + primaryId +
+                "} " + super.toString();
+    }
 }

@@ -14,4 +14,11 @@ public class BaseEntoserData extends BaseData {
     public void setId(Long id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "BaseEntoserData{" +
+                "id=" + id +
+                "} " + super.toString();
+    }
 }

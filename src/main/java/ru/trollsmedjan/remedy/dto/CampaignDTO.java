@@ -43,4 +43,13 @@ public class CampaignDTO {
     public void setConstellation(String constellation) {
         this.constellation = constellation;
     }
+
+    @Override
+    public String toString() {
+        return "CampaignDTO{" +
+                "name='" + name + '\'' +
+                ", constellation='" + constellation + '\'' +
+                ", id=" + id +
+                '}';
+    }
 }

@@ -14,4 +14,11 @@ public class BaseBeaconData extends BaseData {
     public void setBeaconId(Long beaconId) {
         this.beaconId = beaconId;
     }
+
+    @Override
+    public String toString() {
+        return "BaseBeaconData{" +
+                "beaconId=" + beaconId +
+                "} " + super.toString();
+    }
 }

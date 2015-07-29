@@ -1,6 +1,7 @@
 package ru.trollsmedjan.remedy.resource;
 
 import com.wordnik.swagger.annotations.Api;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/campaign")
 public class CampaignResource {
+
+    private static final Logger log = Logger.getLogger(CampaignResource.class);
 
     private Set<String> authorisedUsers = new HashSet<>();
     private final static String KARER1 = "Karer I";
@@ -61,6 +64,7 @@ public class CampaignResource {
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<List<CampaignDTO>> getCampaigns() {
+        log.info("GET campaigns");
         return new ResponseEntity<List<CampaignDTO>>(campaignService.getCampaigns()
                 .stream()
                 .map(c -> new CampaignDTO(c.getName(), c.getConstellation().getName(), c.getId()))
@@ -71,14 +75,19 @@ public class CampaignResource {
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<CampaignDTO> startCampaign(@RequestBody StartCampaignDTO startCampaignDTO) {
+        log.info("start campaign " + startCampaignDTO);
         if (!checkHardcodedUser(startCampaignDTO.getUsername())) {
+            log.warn("Bad user");
             return new ResponseEntity<CampaignDTO>(HttpStatus.UNAUTHORIZED);
         }
         Constellation constellation = spaceService.getConstellation(startCampaignDTO.getConstellation());
         if (constellation == null) {
+            log.warn("constellation not found");
             return new ResponseEntity<CampaignDTO>(HttpStatus.NOT_FOUND);
         }
+
         Campaign campaign = campaignService.createNewCampaign(startCampaignDTO.getName(), constellation);
+        log.debug("creating campaign " + campaign);
         logService.info(ActionType.CAMPAIGN_START, startCampaignDTO.getUsername(), campaign, campaign.toString());
         CampaignDTO campaignDTO = new CampaignDTO();
 
@@ -88,13 +97,17 @@ public class CampaignResource {
     @RequestMapping(value = "/stop", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<CampaignDTO> stopCampaign(@RequestBody StopCampaignDTO stopCampaignDTO) {
+        log.info("Stopping campaign " + stopCampaignDTO);
         if (!checkHardcodedUser(stopCampaignDTO.getUsername())) {
+            log.warn("Bad user");
             return new ResponseEntity<CampaignDTO>(HttpStatus.UNAUTHORIZED);
         }
         Campaign campaign = campaignService.getCampaign(stopCampaignDTO.getCampaignId());
         if (campaign == null) {
+            log.warn("campaign not found");
             return new ResponseEntity<CampaignDTO>(HttpStatus.BAD_REQUEST);
         }
+        log.debug("stopping campaign " + campaign);
         logService.info(ActionType.CAMPAING_STOP, stopCampaignDTO.getUsername(), campaign, campaign.toString());
         campaignService.stopCampaign(campaign);
 

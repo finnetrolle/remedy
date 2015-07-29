@@ -24,4 +24,12 @@ public class BaseData {
     public void setCampaignId(Long campaignId) {
         this.campaignId = campaignId;
     }
+
+    @Override
+    public String toString() {
+        return "BaseData{" +
+                "username='" + username + '\'' +
+                ", campaignId=" + campaignId +
+                '}';
+    }
 }

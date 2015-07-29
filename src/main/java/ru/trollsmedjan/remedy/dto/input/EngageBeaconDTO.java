@@ -14,4 +14,11 @@ public class EngageBeaconDTO extends BaseBeaconData {
     public void setEntoser(String entoser) {
         this.entoser = entoser;
     }
+
+    @Override
+    public String toString() {
+        return "EngageBeaconDTO{" +
+                "entoser='" + entoser + '\'' +
+                "} " + super.toString();
+    }
 }

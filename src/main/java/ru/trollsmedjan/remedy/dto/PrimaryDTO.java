@@ -1,6 +1,5 @@
 package ru.trollsmedjan.remedy.dto;
 
-import ru.trollsmedjan.remedy.model.entity.Beacon;
 
 import java.util.List;
 
@@ -52,5 +51,14 @@ public class PrimaryDTO {
     public PrimaryDTO(String name, long id) {
         this.name = name;
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "PrimaryDTO{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                ", beacons=" + beacons +
+                '}';
     }
 }

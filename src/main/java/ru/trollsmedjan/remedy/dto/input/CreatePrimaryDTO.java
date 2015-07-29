@@ -14,4 +14,11 @@ public class CreatePrimaryDTO extends BaseData {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "CreatePrimaryDTO{" +
+                "name='" + name + '\'' +
+                "} " + super.toString();
+    }
 }

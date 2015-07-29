@@ -1,5 +1,6 @@
 package ru.trollsmedjan.remedy.service;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.trollsmedjan.remedy.model.dao.ConstellationRepository;
@@ -15,6 +16,8 @@ import java.util.List;
  */
 @Service
 public class SpaceService {
+
+    private static final Logger log = Logger.getLogger(SpaceService.class);
 
     @Autowired
     private ConstellationRepository constellationRepository;

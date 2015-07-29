@@ -1,5 +1,6 @@
 package ru.trollsmedjan.remedy.service;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.trollsmedjan.remedy.model.dao.BeaconRepository;
@@ -14,6 +15,8 @@ import java.util.List;
  */
 @Service
 public class BeaconService {
+
+    private static final Logger log = Logger.getLogger(BeaconService.class);
 
     @Autowired
     private BeaconRepository beaconRepository;

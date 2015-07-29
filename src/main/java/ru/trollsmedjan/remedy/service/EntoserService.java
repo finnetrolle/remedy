@@ -1,5 +1,6 @@
 package ru.trollsmedjan.remedy.service;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.trollsmedjan.remedy.model.dao.EntoserRepository;
@@ -13,6 +14,8 @@ import java.util.List;
  */
 @Service
 public class EntoserService {
+
+    private static final Logger log = Logger.getLogger(EntoserService.class);
 
     @Autowired
     private EntoserRepository entoserRepository;

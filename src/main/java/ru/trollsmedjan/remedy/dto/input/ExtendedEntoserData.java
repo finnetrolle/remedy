@@ -54,4 +54,15 @@ public class ExtendedEntoserData extends BaseData {
     public void setCapitalShip(boolean isCapitalShip) {
         this.isCapitalShip = isCapitalShip;
     }
+
+    @Override
+    public String toString() {
+        return "ExtendedEntoserData{" +
+                "corporation='" + corporation + '\'' +
+                ", alliance='" + alliance + '\'' +
+                ", ship='" + ship + '\'' +
+                ", isT2EntosisModule=" + isT2EntosisModule +
+                ", isCapitalShip=" + isCapitalShip +
+                "} " + super.toString();
+    }
 }

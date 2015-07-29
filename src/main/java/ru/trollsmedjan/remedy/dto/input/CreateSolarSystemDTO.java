@@ -34,4 +34,13 @@ public class CreateSolarSystemDTO {
     public void setConstellation(String constellation) {
         this.constellation = constellation;
     }
+
+    @Override
+    public String toString() {
+        return "CreateSolarSystemDTO{" +
+                "name='" + name + '\'' +
+                ", constellation='" + constellation + '\'' +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }

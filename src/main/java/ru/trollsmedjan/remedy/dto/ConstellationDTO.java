@@ -40,4 +40,12 @@ public class ConstellationDTO {
 
     public ConstellationDTO() {
     }
+
+    @Override
+    public String toString() {
+        return "ConstellationDTO{" +
+                "name='" + name + '\'' +
+                ", systemList=" + systemList +
+                '}';
+    }
 }

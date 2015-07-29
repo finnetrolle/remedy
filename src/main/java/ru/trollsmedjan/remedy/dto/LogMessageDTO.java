@@ -51,4 +51,14 @@ public class LogMessageDTO {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "LogMessageDTO{" +
+                "username='" + username + '\'' +
+                ", timestamp=" + timestamp +
+                ", actionType=" + actionType +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

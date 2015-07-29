@@ -24,4 +24,12 @@ public class CreateConstellationDTO {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "CreateConstellationDTO{" +
+                "name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }

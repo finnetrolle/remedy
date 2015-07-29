@@ -1,6 +1,7 @@
 package ru.trollsmedjan.remedy.resource;
 
 import com.wordnik.swagger.annotations.Api;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/constellations")
 public class ConstellationResource {
 
+    private static final Logger log = Logger.getLogger(ConstellationResource.class);
+
     @Autowired
     private SpaceService spaceService;
 
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     List<ConstellationDTO> getConstellations() {
+        log.info("GET constellations");
         return spaceService.getAllConstellations().stream()
                 .map(constellationToDTO)
                 .collect(Collectors.toList());
@@ -44,8 +48,10 @@ public class ConstellationResource {
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<ConstellationDTO> createConstellation(@RequestBody CreateConstellationDTO constellationDTO) {
+        log.info("create constellation " + constellationDTO);
         Constellation constellation = spaceService.getConstellation(constellationDTO.getName());
         if (constellation != null) {
+            log.warn("constellation already exists");
             return new ResponseEntity<ConstellationDTO>(HttpStatus.BAD_REQUEST);
         }
         constellation = new Constellation();
@@ -57,8 +63,10 @@ public class ConstellationResource {
     @RequestMapping(value = "/constellations/{name}/remove", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<ConstellationDTO> removeConstellation(@RequestBody ConstellationDTO constellationDTO) {
+        log.info("remove constellation "+ constellationDTO);
         Constellation constellation = spaceService.getConstellation(constellationDTO.getName());
         if (constellation == null) {
+            log.warn("constellation not found");
             return new ResponseEntity<ConstellationDTO>(HttpStatus.BAD_REQUEST);
         }
         spaceService.removeConstellation(constellation);

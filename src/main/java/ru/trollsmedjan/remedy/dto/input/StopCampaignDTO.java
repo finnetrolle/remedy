@@ -5,4 +5,8 @@ package ru.trollsmedjan.remedy.dto.input;
  */
 public class StopCampaignDTO extends BaseData {
 
+    @Override
+    public String toString() {
+        return "StopCampaignDTO{} " + super.toString();
+    }
 }

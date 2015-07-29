@@ -14,4 +14,11 @@ public class RemovePrimaryDTO extends BaseData {
     public void setPrimaryId(long primaryId) {
         this.primaryId = primaryId;
     }
+
+    @Override
+    public String toString() {
+        return "RemovePrimaryDTO{" +
+                "primaryId=" + primaryId +
+                "} " + super.toString();
+    }
 }

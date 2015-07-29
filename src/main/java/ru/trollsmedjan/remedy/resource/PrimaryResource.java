@@ -1,6 +1,7 @@
 package ru.trollsmedjan.remedy.resource;
 
 import com.wordnik.swagger.annotations.Api;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/primary")
 public class PrimaryResource {
 
+    private static final Logger log = Logger.getLogger(PrimaryResource.class);
+
     @Autowired
     private CampaignService campaignService;
 
@@ -44,8 +47,10 @@ public class PrimaryResource {
     @RequestMapping(value = "/{campaignid}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<PrimaryDTO>> getPrimaries(@PathVariable Long campaignid) {
+        log.info("GET primaries for " + campaignid);
         Campaign campaign = campaignService.getCampaign(campaignid);
         if (campaign == null) {
+            log.warn("campaign not found");
             return new ResponseEntity<List<PrimaryDTO>>(HttpStatus.NOT_FOUND);
         }
         List<PrimaryGoal> primaryGoals = primaryService.get(campaign);
@@ -59,12 +64,15 @@ public class PrimaryResource {
     @RequestMapping(value = "/{campaignid}/{primaryid}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<PrimaryDTO>> getPrimary(@PathVariable Long campaignid, @PathVariable Long primaryid) {
+        log.info("GET beacons for campaign " + campaignid + " & primary " +primaryid);
         Campaign campaign = campaignService.getCampaign(campaignid);
         if (campaign == null) {
+            log.warn("campaign not found");
             return new ResponseEntity<List<PrimaryDTO>>(HttpStatus.NOT_FOUND);
         }
         PrimaryGoal primaryGoal = primaryService.get(primaryid);
         if (primaryGoal == null) {
+            log.warn("primary not found");
             return new ResponseEntity<List<PrimaryDTO>>(HttpStatus.NOT_FOUND);
         }
         List<BeaconDTO> beaconDTOs = beaconService.getBeacons(primaryGoal)
@@ -82,8 +90,10 @@ public class PrimaryResource {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<PrimaryDTO> createPrimary(@RequestBody CreatePrimaryDTO createPrimaryDTO) {
+        log.info("create primary " + createPrimaryDTO);
         Campaign campaign = campaignService.getCampaign(createPrimaryDTO.getCampaignId());
         if (campaign == null) {
+            log.warn("campaign not found");
             return new ResponseEntity<PrimaryDTO>(HttpStatus.BAD_REQUEST);
         }
         PrimaryGoal primaryGoal = new PrimaryGoal();
@@ -97,12 +107,15 @@ public class PrimaryResource {
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<PrimaryDTO> removePrimary(@RequestBody RemovePrimaryDTO removePrimaryDTO) {
+        log.info("remove primary " + removePrimaryDTO);
         Campaign campaign = campaignService.getCampaign(removePrimaryDTO.getCampaignId());
         if (campaign == null) {
+            log.warn("campaign not found");
             return new ResponseEntity<PrimaryDTO>(HttpStatus.BAD_REQUEST);
         }
         PrimaryGoal primaryGoal = primaryService.get(removePrimaryDTO.getPrimaryId());
         if (primaryGoal == null) {
+            log.warn("primary not found");
             return new ResponseEntity<PrimaryDTO>(HttpStatus.NOT_FOUND);
         }
         PrimaryDTO dto = new PrimaryDTO(primaryGoal.getName(), primaryGoal.getId());
