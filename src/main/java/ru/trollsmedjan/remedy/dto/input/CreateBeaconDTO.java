@@ -9,8 +9,6 @@ public class CreateBeaconDTO extends BaseData {
 
     private String location;
 
-    private String affectingSystem;
-
     private long primaryId;
 
     public long getPrimaryId() {
@@ -35,14 +33,6 @@ public class CreateBeaconDTO extends BaseData {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getAffectingSystem() {
-        return affectingSystem;
-    }
-
-    public void setAffectingSystem(String affectingSystem) {
-        this.affectingSystem = affectingSystem;
     }
 
 }

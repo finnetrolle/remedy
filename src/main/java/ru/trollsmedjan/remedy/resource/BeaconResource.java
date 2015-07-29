@@ -207,11 +207,6 @@ public class BeaconResource {
             return getBadRequest();
         }
 
-        SolarSystem affectingOn = spaceService.getSolarSystem(createBeaconDTO.getAffectingSystem());
-        if (affectingOn == null) {
-            return getBadRequest();
-        }
-
         PrimaryGoal primaryGoal = primaryService.get(createBeaconDTO.getPrimaryId());
         if (primaryGoal == null) {
             return getBadRequest();
@@ -220,13 +215,10 @@ public class BeaconResource {
         if (!location.getConstellation().equals(campaign.getConstellation())) {
             return getBadRequest();
         }
-        if (!affectingOn.getConstellation().equals(campaign.getConstellation())) {
-            return getBadRequest();
-        }
+
 
         Beacon beacon = new Beacon();
         beacon.setPrimaryGoal(primaryGoal);
-        beacon.setAffectingSystem(affectingOn);
         beacon.setCampaign(campaign);
         beacon.setLocation(location);
         beacon.setName(createBeaconDTO.getName());
@@ -241,7 +233,6 @@ public class BeaconResource {
         beaconDTO.setPrimary(beacon.getPrimaryGoal().getName());
         beaconDTO.setId(beacon.getId());
         beaconDTO.setLocation(beacon.getLocation().getName());
-        beaconDTO.setAffectingSystem(beacon.getAffectingSystem().getName());
         beaconDTO.setName(beacon.getName());
         beaconDTO.setStatus(beacon.getStatus());
         if (beaconDTO.getStatus() == BeaconStatus.ENGAGED || beaconDTO.getStatus() == BeaconStatus.WARMINGUP) {

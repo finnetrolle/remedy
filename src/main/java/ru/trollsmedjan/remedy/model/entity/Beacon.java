@@ -24,9 +24,6 @@ public class Beacon {
     @ManyToOne
     private SolarSystem location;
 
-    @ManyToOne
-    private SolarSystem affectingSystem;
-
     @Enumerated
     private BeaconStatus status;
 
@@ -77,14 +74,6 @@ public class Beacon {
         this.location = location;
     }
 
-    public SolarSystem getAffectingSystem() {
-        return affectingSystem;
-    }
-
-    public void setAffectingSystem(SolarSystem affectingSystem) {
-        this.affectingSystem = affectingSystem;
-    }
-
     public BeaconStatus getStatus() {
         return status;
     }
@@ -123,7 +112,6 @@ public class Beacon {
                 ", p=" + primaryGoal +
                 ", n='" + name + '\'' +
                 ", l=" + location +
-                ", a=" + affectingSystem +
                 ", s=" + status +
                 ", e=" + entoser +
                 ", t=" + startTime +

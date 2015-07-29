@@ -13,8 +13,6 @@ public class BeaconDTO {
 
     private String location;
 
-    private String affectingSystem;
-
     private BeaconStatus status;
 
     private String entoser;
@@ -33,11 +31,10 @@ public class BeaconDTO {
         this.primary = primary;
     }
 
-    public BeaconDTO(long id, String name, String location, String affectingSystem, BeaconStatus status, String entoser, long startTime, long timeToCapture, String primary) {
+    public BeaconDTO(long id, String name, String location, BeaconStatus status, String entoser, long startTime, long timeToCapture, String primary) {
         this.id = id;
         this.name = name;
         this.location = location;
-        this.affectingSystem = affectingSystem;
         this.status = status;
         this.entoser = entoser;
         this.startTime = startTime;
@@ -70,14 +67,6 @@ public class BeaconDTO {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getAffectingSystem() {
-        return affectingSystem;
-    }
-
-    public void setAffectingSystem(String affectingSystem) {
-        this.affectingSystem = affectingSystem;
     }
 
     public BeaconStatus getStatus() {
