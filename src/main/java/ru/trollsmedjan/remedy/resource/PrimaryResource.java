@@ -48,7 +48,8 @@ public class PrimaryResource {
         if (campaign == null) {
             return new ResponseEntity<List<PrimaryDTO>>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<List<PrimaryDTO>>(primaryService.get(campaign)
+        List<PrimaryGoal> primaryGoals = primaryService.get(campaign);
+        return new ResponseEntity<List<PrimaryDTO>>(primaryGoals
                 .stream()
                 .map(p -> new PrimaryDTO(p.getName(), p.getId()))
                 .collect(Collectors.toList()),
@@ -87,6 +88,7 @@ public class PrimaryResource {
         }
         PrimaryGoal primaryGoal = new PrimaryGoal();
         primaryGoal.setName(createPrimaryDTO.getName());
+        primaryGoal.setCampaign(campaign);
         primaryService.save(primaryGoal);
         logService.info(ActionType.PRIMARY_ADD, createPrimaryDTO.getUsername(), campaign, primaryGoal.toString());
         return new ResponseEntity<PrimaryDTO>(new PrimaryDTO(primaryGoal.getName(), primaryGoal.getId()), HttpStatus.OK);
