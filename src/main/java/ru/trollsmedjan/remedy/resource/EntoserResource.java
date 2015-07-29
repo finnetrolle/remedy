@@ -10,10 +10,10 @@ import ru.trollsmedjan.remedy.dto.EntoserDTO;
 import ru.trollsmedjan.remedy.dto.input.BaseEntoserData;
 import ru.trollsmedjan.remedy.dto.input.ExtendedEntoserData;
 import ru.trollsmedjan.remedy.model.entity.*;
-import ru.trollsmedjan.remedy.service.BeaconService;
-import ru.trollsmedjan.remedy.service.CampaignService;
-import ru.trollsmedjan.remedy.service.EntoserService;
-import ru.trollsmedjan.remedy.service.LogService;
+import ru.trollsmedjan.remedy.oldservice.BeaconService;
+import ru.trollsmedjan.remedy.oldservice.CampaignService;
+import ru.trollsmedjan.remedy.oldservice.EntoserService;
+import ru.trollsmedjan.remedy.oldservice.LogService;
 
 import java.util.List;
 import java.util.stream.Collectors;

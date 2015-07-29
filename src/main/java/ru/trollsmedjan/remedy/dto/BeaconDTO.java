@@ -15,11 +15,11 @@ public class BeaconDTO {
 
     private BeaconStatus status;
 
-    private String entoser;
+    private String entoser = null;
 
-    private long startTime;
+    private long startTime = 0;
 
-    private long timeToCapture;
+    private long timeToCapture = 0;
 
     private String primary;
 
@@ -39,6 +39,14 @@ public class BeaconDTO {
         this.entoser = entoser;
         this.startTime = startTime;
         this.timeToCapture = timeToCapture;
+        this.primary = primary;
+    }
+
+    public BeaconDTO(long id, String name, String location, BeaconStatus status, String primary) {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+        this.status = status;
         this.primary = primary;
     }
 

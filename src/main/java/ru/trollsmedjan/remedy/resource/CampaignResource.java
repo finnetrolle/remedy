@@ -7,17 +7,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.trollsmedjan.remedy.dto.CampaignDTO;
-import ru.trollsmedjan.remedy.dto.ConstellationDTO;
 import ru.trollsmedjan.remedy.dto.input.StartCampaignDTO;
 import ru.trollsmedjan.remedy.dto.input.StopCampaignDTO;
+import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
+import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
 import ru.trollsmedjan.remedy.model.entity.ActionType;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
 import ru.trollsmedjan.remedy.model.entity.Constellation;
-import ru.trollsmedjan.remedy.service.CampaignService;
-import ru.trollsmedjan.remedy.service.LogService;
-import ru.trollsmedjan.remedy.service.SpaceService;
+import ru.trollsmedjan.remedy.services.CampaignService;
+import ru.trollsmedjan.remedy.services.OptionalDataProvider;
+import sun.awt.SunToolkit;
 
 import javax.annotation.PostConstruct;
+import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,86 +35,65 @@ import java.util.stream.Collectors;
 public class CampaignResource {
 
     private static final Logger log = Logger.getLogger(CampaignResource.class);
+    
+    private final static String[] ALLOWED = new String[]{
+        "Karer I","Karer II","Karer III","Karer IV","Karer V","Finne Trolle"
+    };
 
-    private Set<String> authorisedUsers = new HashSet<>();
-    private final static String KARER1 = "Karer I";
-    private final static String KARER2 = "Karer II";
-    private final static String KARER3 = "Karer III";
-    private final static String KARER4 = "Karer IV";
-    private final static String KARER5 = "Karer V";
-
-    private final static String FINNETROLLE = "Finne Trolle";
-
-    @Autowired
-    private LogService logService;
+    private final static Set<String> authorisedUsers = new HashSet<>();
 
     @PostConstruct
     private void init() {
-        authorisedUsers.add(KARER1);
-        authorisedUsers.add(KARER2);
-        authorisedUsers.add(KARER3);
-        authorisedUsers.add(KARER4);
-        authorisedUsers.add(KARER5);
-        authorisedUsers.add(FINNETROLLE);
+        authorisedUsers.addAll(Arrays.asList(ALLOWED));
     }
+
+    @Autowired
+    private OptionalDataProvider db;
 
     @Autowired
     private CampaignService campaignService;
 
-    @Autowired
-    private SpaceService spaceService;
-
     @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<List<CampaignDTO>> getCampaigns() {
+    @ResponseBody
+    public Response getCampaigns() {
         log.info("GET campaigns");
-        return new ResponseEntity<List<CampaignDTO>>(campaignService.getCampaigns()
-                .stream()
-                .map(c -> new CampaignDTO(c.getName(), c.getConstellation().getName(), c.getId()))
-                .collect(Collectors.toList())
-                , HttpStatus.OK);
+        return Response.ok()
+                .entity(db.findCampaigns())
+                .build();
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<CampaignDTO> startCampaign(@RequestBody StartCampaignDTO startCampaignDTO) {
+    @ResponseBody
+    public Response startCampaign(@RequestBody StartCampaignDTO startCampaignDTO) throws RemedyDataLayerException {
         log.info("start campaign " + startCampaignDTO);
+
         if (!checkHardcodedUser(startCampaignDTO.getUsername())) {
-            log.warn("Bad user");
-            return new ResponseEntity<CampaignDTO>(HttpStatus.UNAUTHORIZED);
-        }
-        Constellation constellation = spaceService.getConstellation(startCampaignDTO.getConstellation());
-        if (constellation == null) {
-            log.warn("constellation not found");
-            return new ResponseEntity<CampaignDTO>(HttpStatus.NOT_FOUND);
+            log.debug("UNAUTHORIZED");
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        Campaign campaign = campaignService.createNewCampaign(startCampaignDTO.getName(), constellation);
-        log.debug("creating campaign " + campaign);
-        logService.info(ActionType.CAMPAIGN_START, startCampaignDTO.getUsername(), campaign, campaign.toString());
-        CampaignDTO campaignDTO = new CampaignDTO();
-
-        return new ResponseEntity<CampaignDTO>(new CampaignDTO(campaign.getName(), campaign.getConstellation().getName(), campaign.getId()), HttpStatus.OK);
+        Campaign campaign = campaignService.createCampaign(startCampaignDTO.getName(), startCampaignDTO.getConstellation());
+        return Response.ok()
+                .entity(new CampaignDTO(campaign.getName(), campaign.getConstellation().getName(), campaign.getId()))
+                .build();
     }
 
-    @RequestMapping(value = "/stop", method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<CampaignDTO> stopCampaign(@RequestBody StopCampaignDTO stopCampaignDTO) {
+    @RequestMapping(value = "/{id}/stop", method = RequestMethod.POST)
+    @ResponseBody
+    public Response stopCampaign(@PathVariable Long id, @RequestBody StopCampaignDTO stopCampaignDTO)
+            throws RemedyDataLayerException, RemedyServiceLayerException {
         log.info("Stopping campaign " + stopCampaignDTO);
-        if (!checkHardcodedUser(stopCampaignDTO.getUsername())) {
-            log.warn("Bad user");
-            return new ResponseEntity<CampaignDTO>(HttpStatus.UNAUTHORIZED);
-        }
-        Campaign campaign = campaignService.getCampaign(stopCampaignDTO.getCampaignId());
-        if (campaign == null) {
-            log.warn("campaign not found");
-            return new ResponseEntity<CampaignDTO>(HttpStatus.BAD_REQUEST);
-        }
-        log.debug("stopping campaign " + campaign);
-        logService.info(ActionType.CAMPAING_STOP, stopCampaignDTO.getUsername(), campaign, campaign.toString());
-        campaignService.stopCampaign(campaign);
 
-        return new ResponseEntity<CampaignDTO>(HttpStatus.OK);
+        if (!checkHardcodedUser(stopCampaignDTO.getUsername())) {
+            log.debug("UNAUTHORIZED");
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        campaignService.stopCampaign(id);
+
+        return Response.ok()
+                .entity(id)
+                .build();
     }
 
 

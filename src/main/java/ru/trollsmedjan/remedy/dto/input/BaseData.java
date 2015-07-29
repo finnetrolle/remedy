@@ -7,8 +7,6 @@ public class BaseData {
 
     private String username;
 
-    private Long campaignId;
-
     public String getUsername() {
         return username;
     }
@@ -17,19 +15,10 @@ public class BaseData {
         this.username = username;
     }
 
-    public Long getCampaignId() {
-        return campaignId;
-    }
-
-    public void setCampaignId(Long campaignId) {
-        this.campaignId = campaignId;
-    }
-
     @Override
     public String toString() {
         return "BaseData{" +
                 "username='" + username + '\'' +
-                ", campaignId=" + campaignId +
                 '}';
     }
 }

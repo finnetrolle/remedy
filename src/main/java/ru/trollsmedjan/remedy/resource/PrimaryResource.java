@@ -13,10 +13,10 @@ import ru.trollsmedjan.remedy.dto.input.RemovePrimaryDTO;
 import ru.trollsmedjan.remedy.model.entity.ActionType;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
 import ru.trollsmedjan.remedy.model.entity.PrimaryGoal;
-import ru.trollsmedjan.remedy.service.BeaconService;
-import ru.trollsmedjan.remedy.service.CampaignService;
-import ru.trollsmedjan.remedy.service.LogService;
-import ru.trollsmedjan.remedy.service.PrimaryService;
+import ru.trollsmedjan.remedy.oldservice.BeaconService;
+import ru.trollsmedjan.remedy.oldservice.CampaignService;
+import ru.trollsmedjan.remedy.oldservice.LogService;
+import ru.trollsmedjan.remedy.oldservice.PrimaryService;
 
 import java.util.List;
 import java.util.stream.Collectors;

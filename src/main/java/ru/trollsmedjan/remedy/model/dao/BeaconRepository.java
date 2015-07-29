@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.trollsmedjan.remedy.model.entity.Beacon;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
 import ru.trollsmedjan.remedy.model.entity.PrimaryGoal;
+import ru.trollsmedjan.remedy.model.entity.SolarSystem;
+import scala.util.parsing.combinator.testing.Str;
 
 import java.util.List;
 
@@ -15,5 +17,7 @@ public interface BeaconRepository extends JpaRepository<Beacon, Long> {
     List<Beacon> findByCampaign(Campaign campaign);
 
     List<Beacon> findByPrimaryGoal(PrimaryGoal primaryGoal);
+
+    Beacon findOneByNameAndPrimaryGoalAndSolarSystem(String name, PrimaryGoal primaryGoal, SolarSystem solarSystem);
 
 }

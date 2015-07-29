@@ -1,4 +1,4 @@
-package ru.trollsmedjan.remedy.service;
+package ru.trollsmedjan.remedy.oldservice;
 
 /**
  * Created by finnetrolle on 29.07.2015.

@@ -10,7 +10,7 @@ import ru.trollsmedjan.remedy.dto.ConstellationDTO;
 import ru.trollsmedjan.remedy.dto.SolarSystemDTO;
 import ru.trollsmedjan.remedy.dto.input.CreateConstellationDTO;
 import ru.trollsmedjan.remedy.model.entity.Constellation;
-import ru.trollsmedjan.remedy.service.SpaceService;
+import ru.trollsmedjan.remedy.oldservice.SpaceService;
 
 import java.util.List;
 import java.util.function.Function;
