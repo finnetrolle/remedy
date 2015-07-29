@@ -105,9 +105,10 @@ public class PrimaryResource {
         if (primaryGoal == null) {
             return new ResponseEntity<PrimaryDTO>(HttpStatus.NOT_FOUND);
         }
+        PrimaryDTO dto = new PrimaryDTO(primaryGoal.getName(), primaryGoal.getId());
         logService.info(ActionType.PRIMARY_REMOVE, removePrimaryDTO.getUsername(), campaign, primaryGoal.toString());
         primaryService.delete(primaryGoal);
-        return new ResponseEntity<PrimaryDTO>(HttpStatus.OK);
+        return new ResponseEntity<PrimaryDTO>(dto, HttpStatus.OK);
     }
 
 
