@@ -1,6 +1,8 @@
 package ru.trollsmedjan.remedy.services;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.trollsmedjan.remedy.exception.CampaignNotFoundException;
@@ -17,6 +19,7 @@ import ru.trollsmedjan.remedy.model.entity.Entoser;
 @Service
 public class EntoserServiceImpl implements EntoserService {
 
+
     @Autowired
     private OptionalDataProvider db;
 
@@ -26,7 +29,7 @@ public class EntoserServiceImpl implements EntoserService {
     @Autowired
     private EngageService engageService;
 
-    private static final Logger log = Logger.getLogger(EntoserServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Entoser createEntoser(String username, String ship, boolean isT2EntosisModule, boolean isCapitalShip, Long campaignId) throws RemedyDataLayerException, RemedyServiceLayerException {

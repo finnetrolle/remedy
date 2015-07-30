@@ -2,6 +2,7 @@ package ru.trollsmedjan.remedy.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.model.dao.*;
 import ru.trollsmedjan.remedy.model.entity.*;
 
@@ -58,7 +59,7 @@ public class OptionalDataProvider {
     }
 
     public boolean isBeaconExists(String name, PrimaryGoal primaryGoal, SolarSystem solarSystem) {
-        Beacon beacon = beaconRepository.findOneByNameAndPrimaryGoalAndSolarSystem(name, primaryGoal, solarSystem);
+        Beacon beacon = beaconRepository.findOneByNameAndPrimaryGoalAndLocation(name, primaryGoal, solarSystem);
         if (beacon == null) {
             return false;
         }
@@ -92,5 +93,51 @@ public class OptionalDataProvider {
     public List<Campaign> findCampaigns() {
         return campaignRepository.findAll();
     }
-    
+
+    public List<Constellation> findConstellations() {
+        return constellationRepository.findAll();
+    }
+
+    public Constellation createConstellation(String constellationName) throws RemedyDataLayerException {
+        Constellation constellation = constellationRepository.findOne(constellationName);
+        if (constellation != null) {
+            throw new RemedyDataLayerException();
+        }
+        constellation = new Constellation();
+        constellation.setName(constellationName);
+        return constellationRepository.save(constellation);
+    }
+
+    public String removeConstellation(String name) throws RemedyDataLayerException {
+        Constellation constellation = getConstellation(name)
+                .orElseThrow(RemedyDataLayerException::new);
+        List<SolarSystem> solars = solarSystemRepository.findByConstellation(constellation);
+        for (SolarSystem s : solars) {
+            removeSolarSystem(s.getName());
+        }
+        constellationRepository.delete(constellation);
+        return name;
+    }
+
+    public String createSolarSystem(String solarName, String constellationName) throws  RemedyDataLayerException {
+        SolarSystem solarSystem = solarSystemRepository.findOne(solarName);
+        if (solarSystem != null) {
+            throw new RemedyDataLayerException();
+        }
+        solarSystem = new SolarSystem();
+        solarSystem.setName(solarName);
+        solarSystem.setConstellation(getConstellation(constellationName)
+                .orElseThrow(() -> new RemedyDataLayerException()));
+        solarSystemRepository.save(solarSystem);
+        return solarName;
+    }
+
+    public String removeSolarSystem(String solarName) throws RemedyDataLayerException {
+        SolarSystem solarSystem = solarSystemRepository.findOne(solarName);
+        if (solarName == null) {
+            throw new RemedyDataLayerException();
+        }
+        solarSystemRepository.delete(solarSystem);
+        return solarName;
+    }
 }

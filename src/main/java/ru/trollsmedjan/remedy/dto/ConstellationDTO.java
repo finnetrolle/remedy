@@ -2,6 +2,7 @@ package ru.trollsmedjan.remedy.dto;
 
 import ru.trollsmedjan.remedy.model.entity.SolarSystem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,13 +12,13 @@ public class ConstellationDTO {
 
     private String name;
 
-    private List<SolarSystemDTO> systemList;
+    private List<String> systemList = new ArrayList<>();
 
-    public List<SolarSystemDTO> getSystemList() {
+    public List<String> getSystemList() {
         return systemList;
     }
 
-    public void setSystemList(List<SolarSystemDTO> systemList) {
+    public void setSystemList(List<String> systemList) {
         this.systemList = systemList;
     }
 
@@ -33,7 +34,7 @@ public class ConstellationDTO {
         this.name = name;
     }
 
-    public ConstellationDTO(String name, List<SolarSystemDTO> systemList) {
+    public ConstellationDTO(String name, List<String> systemList) {
         this.name = name;
         this.systemList = systemList;
     }

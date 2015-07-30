@@ -1,9 +1,10 @@
-package ru.trollsmedjan.remedy.dto.input;
+package ru.trollsmedjan.remedy.dto.request;
+
 
 /**
  * Created by finnetrolle on 28.07.2015.
  */
-public class CreateBeaconDTO extends BaseData {
+public class CreateBeaconDTO extends AuthDTO {
 
     private String name;
 

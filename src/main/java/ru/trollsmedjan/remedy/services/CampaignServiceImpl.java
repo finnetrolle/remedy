@@ -1,6 +1,8 @@
 package ru.trollsmedjan.remedy.services;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.trollsmedjan.remedy.exception.CampaignNotFoundException;
@@ -21,6 +23,7 @@ import java.util.List;
 @Service
 public class CampaignServiceImpl implements CampaignService {
 
+
     @Autowired
     private OptionalDataProvider db;
 
@@ -33,7 +36,7 @@ public class CampaignServiceImpl implements CampaignService {
     @Autowired
     private EntoserService entoserService;
 
-    private static final Logger log = Logger.getLogger(CampaignServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Campaign createCampaign(String name, String constellationName) throws RemedyDataLayerException {

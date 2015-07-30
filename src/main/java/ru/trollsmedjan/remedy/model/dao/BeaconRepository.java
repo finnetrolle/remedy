@@ -18,6 +18,6 @@ public interface BeaconRepository extends JpaRepository<Beacon, Long> {
 
     List<Beacon> findByPrimaryGoal(PrimaryGoal primaryGoal);
 
-    Beacon findOneByNameAndPrimaryGoalAndSolarSystem(String name, PrimaryGoal primaryGoal, SolarSystem solarSystem);
+    Beacon findOneByNameAndPrimaryGoalAndLocation(String name, PrimaryGoal primaryGoal, SolarSystem solarSystem);
 
 }

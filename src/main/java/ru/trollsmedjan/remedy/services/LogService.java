@@ -1,6 +1,6 @@
 package ru.trollsmedjan.remedy.services;
 
-import org.apache.log4j.spi.LoggerRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.trollsmedjan.remedy.exception.CampaignNotFoundException;

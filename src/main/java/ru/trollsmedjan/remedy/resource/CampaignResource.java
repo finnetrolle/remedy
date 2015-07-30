@@ -1,28 +1,24 @@
 package ru.trollsmedjan.remedy.resource;
 
 import com.wordnik.swagger.annotations.Api;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.trollsmedjan.remedy.dto.CampaignDTO;
-import ru.trollsmedjan.remedy.dto.input.StartCampaignDTO;
-import ru.trollsmedjan.remedy.dto.input.StopCampaignDTO;
+import ru.trollsmedjan.remedy.dto.request.AuthDTO;
+import ru.trollsmedjan.remedy.dto.request.StartCampaignDTO;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
-import ru.trollsmedjan.remedy.model.entity.ActionType;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
-import ru.trollsmedjan.remedy.model.entity.Constellation;
 import ru.trollsmedjan.remedy.services.CampaignService;
 import ru.trollsmedjan.remedy.services.OptionalDataProvider;
-import sun.awt.SunToolkit;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,7 +30,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/campaign")
 public class CampaignResource {
 
-    private static final Logger log = Logger.getLogger(CampaignResource.class);
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     
     private final static String[] ALLOWED = new String[]{
         "Karer I","Karer II","Karer III","Karer IV","Karer V","Finne Trolle"
@@ -58,7 +54,7 @@ public class CampaignResource {
     public Response getCampaigns() {
         log.info("GET campaigns");
         return Response.ok()
-                .entity(db.findCampaigns())
+                .entity(db.findCampaigns().stream().map(c -> new CampaignDTO(c.getName(), c.getConstellation().getName(), c.getId())).collect(Collectors.toList()))
                 .build();
     }
 
@@ -78,13 +74,13 @@ public class CampaignResource {
                 .build();
     }
 
-    @RequestMapping(value = "/{id}/stop", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Response stopCampaign(@PathVariable Long id, @RequestBody StopCampaignDTO stopCampaignDTO)
+    public Response stopCampaign(@PathVariable Long id, @RequestBody AuthDTO data)
             throws RemedyDataLayerException, RemedyServiceLayerException {
-        log.info("Stopping campaign " + stopCampaignDTO);
+        log.info("Stopping campaign " + id);
 
-        if (!checkHardcodedUser(stopCampaignDTO.getUsername())) {
+        if (!checkHardcodedUser(data.getUsername())) {
             log.debug("UNAUTHORIZED");
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }

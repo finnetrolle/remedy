@@ -1,4 +1,4 @@
-package ru.trollsmedjan.remedy.dto.input;
+package ru.trollsmedjan.remedy.dto.request;
 
 import ru.trollsmedjan.remedy.model.entity.Constellation;
 

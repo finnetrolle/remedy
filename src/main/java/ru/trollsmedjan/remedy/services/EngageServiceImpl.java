@@ -1,7 +1,10 @@
 package ru.trollsmedjan.remedy.services;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.trollsmedjan.remedy.exception.BeaconNotFoundException;
 import ru.trollsmedjan.remedy.exception.EntoserNotFoundException;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
@@ -15,7 +18,9 @@ import ru.trollsmedjan.remedy.model.entity.Entoser;
 /**
  * Created by finnetrolle on 30.07.2015.
  */
+@Service
 public class EngageServiceImpl implements EngageService {
+
 
     @Autowired
     private OptionalDataProvider db;
@@ -26,7 +31,7 @@ public class EngageServiceImpl implements EngageService {
     @Autowired
     private EntoserRepository entoserRepository;
 
-    private static final Logger log = Logger.getLogger(EngageServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void engage(Long entoserId, Long beaconId) throws RemedyDataLayerException, RemedyServiceLayerException {

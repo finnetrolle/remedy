@@ -91,7 +91,7 @@ public class Entoser {
                 ", ship='" + ship + '\'' +
                 ", isCapitalShip=" + isCapitalShip +
                 ", isT2EntosisModule=" + isT2EntosisModule +
-                ", engaging=" + engaging +
+                ", engaging=" + ((engaging==null) ? "none" : engaging.getName()) +
                 '}';
     }
 }

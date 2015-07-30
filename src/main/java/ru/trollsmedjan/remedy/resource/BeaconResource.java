@@ -1,23 +1,24 @@
 package ru.trollsmedjan.remedy.resource;
 
-import com.wordnik.swagger.annotations.Api;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.trollsmedjan.remedy.dto.BeaconDTO;
-import ru.trollsmedjan.remedy.dto.input.CreateBeaconDTO;
+import ru.trollsmedjan.remedy.dto.request.CreateBeaconDTO;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
 import ru.trollsmedjan.remedy.model.entity.*;
 import ru.trollsmedjan.remedy.services.BeaconService;
+import ru.trollsmedjan.remedy.services.LogService;
 import ru.trollsmedjan.remedy.services.OptionalDataProvider;
 
 import javax.ws.rs.core.Response;
+import java.util.stream.Collectors;
 
 /**
  * Created by finnetrolle on 28.07.2015.
  */
-@Api(basePath = "/beacons", value = "beacons", description = "Operations with Beacons", produces = "application/json")
 @RestController
 @RequestMapping(value = "/campaign/{campaignId}/primary/{primaryId}/beacon")
 public class BeaconResource {
@@ -25,7 +26,10 @@ public class BeaconResource {
     @Autowired
     private BeaconService beaconService;
 
-    private static final Logger log = Logger.getLogger(BeaconResource.class);
+    @Autowired
+    private LogService logService;
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private OptionalDataProvider db;
@@ -42,7 +46,18 @@ public class BeaconResource {
                 .orElseThrow(() -> new RemedyDataLayerException());
 
         return Response.ok()
-                .entity(db.findBeaconsByPrimary(primaryGoal))
+                .entity(db.findBeaconsByPrimary(primaryGoal).stream().map( b -> {
+                    BeaconDTO dto = new BeaconDTO();
+                    dto.setId(b.getId());
+                    dto.setEntoser((b.getEntoser() == null) ? null : b.getEntoser().getName());
+                    dto.setLocation(b.getLocation().getName());
+                    dto.setName(b.getName());
+                    dto.setPrimary(b.getPrimaryGoal().getName());
+                    dto.setStartTime(b.getStartTime());
+                    dto.setStatus(b.getStatus());
+                    dto.setTimeToCapture(b.getTimeToCapture());
+                    return dto;
+                }).collect(Collectors.toList()))
                 .build();
     }
 
@@ -98,6 +113,8 @@ public class BeaconResource {
 
         return Response.ok().build();
     }
+
+
 
 
 

@@ -25,16 +25,16 @@ public class SwaggerConfig  {
     public SwaggerSpringMvcPlugin customImplementation() {
         return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
                 .apiInfo(new ApiInfo("remedy", "Fozzie-sov campaigns automata", null, "maxsyachin@gmail.com", null, null))
-                .includePatterns("/beacons.*"
-                        ,"/entosers.*"
-                        ,"/campaign.*"
-                        ,"/monitoring.*"
-                        ,"/primary.*"
-//                        ,"/constellations.*"
-//                        ,"/solarsystems.*"
-                );
-//        .includePatterns("/.*");
-//                .includePatterns("/beacons.*");
+                .includePatterns("/campaign.*", "/constellation.*", "/monitoring.*");
+//                        ,"/entosers.*"
+//                        ,"/campaign.*"
+//                        ,"/monitoring.*"
+//                        ,"/primary.*"
+////                        ,"/constellations.*"
+////                        ,"/solarsystems.*"
+//                );
+////        .includePatterns("/.*");
+////                .includePatterns("/beacons.*");
     }
 
 

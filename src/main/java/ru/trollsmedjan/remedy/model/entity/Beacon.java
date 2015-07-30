@@ -113,7 +113,7 @@ public class Beacon {
                 ", n='" + name + '\'' +
                 ", l=" + location +
                 ", s=" + status +
-                ", e=" + entoser +
+                ", e=" + ((entoser==null) ? "" : entoser.getName()) +
                 ", t=" + startTime +
                 ", o=" + timeToCapture +
                 '}';

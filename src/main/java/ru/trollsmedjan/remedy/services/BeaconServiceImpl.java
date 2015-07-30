@@ -1,6 +1,8 @@
 package ru.trollsmedjan.remedy.services;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.trollsmedjan.remedy.exception.*;
@@ -23,7 +25,9 @@ public class BeaconServiceImpl implements BeaconService {
     @Autowired
     private EngageService engageService;
 
-    private static final Logger log = Logger.getLogger(BeaconServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+
 
     @Override
     public Beacon createBeacon(String name, Long primaryGoalId, String location) throws RemedyDataLayerException, RemedyServiceLayerException {

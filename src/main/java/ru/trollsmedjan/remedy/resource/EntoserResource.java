@@ -1,141 +1,87 @@
 package ru.trollsmedjan.remedy.resource;
 
-import com.wordnik.swagger.annotations.Api;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.trollsmedjan.remedy.dto.EntoserDTO;
-import ru.trollsmedjan.remedy.dto.input.BaseEntoserData;
-import ru.trollsmedjan.remedy.dto.input.ExtendedEntoserData;
+import ru.trollsmedjan.remedy.dto.request.AuthDTO;
+import ru.trollsmedjan.remedy.dto.request.CreateEntoserDTO;
+import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
+import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
 import ru.trollsmedjan.remedy.model.entity.*;
-import ru.trollsmedjan.remedy.oldservice.BeaconService;
-import ru.trollsmedjan.remedy.oldservice.CampaignService;
-import ru.trollsmedjan.remedy.oldservice.EntoserService;
-import ru.trollsmedjan.remedy.oldservice.LogService;
+import ru.trollsmedjan.remedy.services.EntoserService;
+import ru.trollsmedjan.remedy.services.OptionalDataProvider;
 
-import java.util.List;
+
+import javax.ws.rs.core.Response;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * Created by finnetrolle on 28.07.2015.
  */
-@Api(basePath = "/entosers", value = "Entosers", description = "Operations with entosers", produces = "application/json")
 @RestController
-@RequestMapping("/entosers")
+@RequestMapping("/campaign/{campaignId}/entoser")
 public class EntoserResource {
 
-    private static final Logger log = Logger.getLogger(EntoserResource.class);
-
-    @Autowired
-    private LogService logService;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private EntoserService entoserService;
 
     @Autowired
-    private BeaconService beaconService;
+    private OptionalDataProvider db;
 
-    @Autowired
-    private CampaignService campaignService;
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
+    public Response getEntosers(@PathVariable Long campaignId) throws RemedyDataLayerException{
+        log.info("GET list of entosers for campaign {}", campaignId);
 
-    @RequestMapping(value = "/remove", method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<EntoserDTO> unregisterEntoser(@RequestBody BaseEntoserData data) {
-        log.info("unregister entoser " + data);
-        Campaign campaign = campaignService.getCampaign(data.getCampaignId());
-        if (campaign == null) {
-            log.warn("campaign not found");
-            return getBadRequest();
-        }
+        Campaign campaign = db.getCampaign(campaignId)
+                .orElseThrow(RemedyDataLayerException::new);
 
-        Entoser entoser = entoserService.getEntoser(data.getId());
-        if (entoser == null) {
-            log.warn("entoser not found");
-            return getBadRequest();
-        }
-
-        Beacon beacon = entoser.getEngaging();
-        if (beacon != null) {
-            log.debug("updating beacon " + beacon);
-            beacon.setStatus(BeaconStatus.EMPTY);
-            beacon.setTimeToCapture(0);
-            beacon.setStartTime(0);
-            beaconService.save(beacon);
-        }
-
-        log.debug("updating entoser " + entoser);
-        logService.info(ActionType.ENTOSER_REMOVE, data.getUsername(), campaign, entoser.toString());
-        entoserService.remove(entoser);
-
-        return new ResponseEntity<EntoserDTO>(getEntoserDTO(entoser), HttpStatus.OK);
+        return Response.ok()
+                .entity(db.findEntoserByCampaign(campaign).stream().map(entoserDTOFunction).collect(Collectors.toList()))
+                .build();
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<EntoserDTO> registerEntoser(@RequestBody ExtendedEntoserData data) {
-        log.info("register entoser "+ data);
-        Campaign campaign = campaignService.getCampaign(data.getCampaignId());
-        if (campaign == null) {
-            log.warn("campaign not found");
-            return getBadRequest();
-        }
+    @ResponseBody
+    public Response createEntoser(@PathVariable Long campaignId, @RequestBody CreateEntoserDTO data)
+            throws RemedyDataLayerException, RemedyServiceLayerException {
+        log.info("POST create entoser {} for campaign {}", data, campaignId);
 
-        Entoser entoser = entoserService.getEntoser(data.getUsername(), campaign);
-        if (entoser != null) {
-            log.warn("entoser not found");
-            return getBadRequest();
-        }
-
-        entoser = new Entoser();
-        entoser.setCampaign(campaign);
-        entoser.setCapitalShip(data.isCapitalShip());
-        entoser.setEngaging(null);
-        entoser.setName(data.getUsername());
-        entoser.setShip(data.getShip());
-        entoser.setT2EntosisModule(data.isT2EntosisModule());
-        log.debug("saving entoser " + entoser);
-        entoserService.save(entoser);
-        logService.info(ActionType.ENTOSER_CREATE, data.getUsername(), campaign, entoser.toString());
-
-        return new ResponseEntity<EntoserDTO>(getEntoserDTO(entoser), HttpStatus.OK);
+        return Response.ok()
+                .entity(buildEntoserDTO(entoserService.createEntoser(data.getUsername(), data.getShip(), data.isT2EntosisModule(),
+                        data.isCapitalShip(), campaignId)))
+                .build();
     }
 
-    @RequestMapping(value = "/{campaignid}", method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<List<EntoserDTO>> getEntosers(@PathVariable Long campaignid) {
-        log.info("GET entosers for " + campaignid);
-        Campaign campaign = campaignService.getCampaign(campaignid);
-        if (campaign == null) {
-            log.warn("campaign not found");
-            return new ResponseEntity<List<EntoserDTO>>(HttpStatus.BAD_REQUEST);
-        }
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Response removeEntoser(@PathVariable Long campaignId, @PathVariable Long id, @RequestBody AuthDTO auth)
+            throws RemedyDataLayerException, RemedyServiceLayerException {
+        log.info("POST remove entoser {} from campaign {} by {}", id, campaignId, auth);
 
-        return new ResponseEntity<List<EntoserDTO>>(entoserService.getEntosers(campaign)
-                .stream()
-                .map(e -> {
-                    return getEntoserDTO(e);
-                })
-                .collect(Collectors.toList())
-                , HttpStatus.OK);
+        return Response.ok()
+                .entity(entoserService.removeEntoser(id))
+                .build();
     }
 
-    private EntoserDTO getEntoserDTO(Entoser entoser) {
-        EntoserDTO entoserDTO = new EntoserDTO();
-        entoserDTO.setCapitalShip(entoser.isCapitalShip());
+    private static EntoserDTO buildEntoserDTO(Entoser entoser) {
+        EntoserDTO dto = new EntoserDTO();
+        dto.setCapitalShip(entoser.isCapitalShip());
         if (entoser.getEngaging() != null) {
-            entoserDTO.setEngaging(entoser.getEngaging().getName());
+            dto.setEngaging(entoser.getEngaging().getName());
         }
-        entoserDTO.setId(entoser.getId());
-        entoserDTO.setName(entoser.getName());
-        entoserDTO.setShip(entoser.getShip());
-        entoserDTO.setT2EntosisModule(entoser.isT2EntosisModule());
-        return entoserDTO;
+        dto.setId(entoser.getId());
+        dto.setName(entoser.getName());
+        dto.setShip(entoser.getShip());
+        dto.setT2EntosisModule(entoser.isT2EntosisModule());
+        return dto;
     }
 
-    private ResponseEntity<EntoserDTO> getBadRequest() {
-        return new ResponseEntity<EntoserDTO>(HttpStatus.BAD_REQUEST);
-    }
+    private static Function<Entoser, EntoserDTO> entoserDTOFunction = e -> buildEntoserDTO(e);
 
 }
