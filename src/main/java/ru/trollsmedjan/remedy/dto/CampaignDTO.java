@@ -1,5 +1,7 @@
 package ru.trollsmedjan.remedy.dto;
 
+import java.util.List;
+
 /**
  * Created by finnetrolle on 27.07.2015.
  */
@@ -10,6 +12,36 @@ public class CampaignDTO {
     private String constellation;
 
     private long id;
+
+    private List<PrimaryDTO> primaries;
+
+    private List<EntoserDTO> entosers;
+
+    private List<String> solarSystems;
+
+    public List<String> getSolarSystems() {
+        return solarSystems;
+    }
+
+    public void setSolarSystems(List<String> solarSystems) {
+        this.solarSystems = solarSystems;
+    }
+
+    public List<EntoserDTO> getEntosers() {
+        return entosers;
+    }
+
+    public void setEntosers(List<EntoserDTO> entosers) {
+        this.entosers = entosers;
+    }
+
+    public List<PrimaryDTO> getPrimaries() {
+        return primaries;
+    }
+
+    public void setPrimaries(List<PrimaryDTO> primaries) {
+        this.primaries = primaries;
+    }
 
     public CampaignDTO() {
     }

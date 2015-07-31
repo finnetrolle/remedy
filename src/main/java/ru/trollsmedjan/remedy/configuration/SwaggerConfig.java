@@ -25,7 +25,7 @@ public class SwaggerConfig  {
     public SwaggerSpringMvcPlugin customImplementation() {
         return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
                 .apiInfo(new ApiInfo("remedy", "Fozzie-sov campaigns automata", null, "maxsyachin@gmail.com", null, null))
-                .includePatterns("/campaign.*", "/constellation.*", "/monitoring.*");
+                .includePatterns("/campaign.*", "/constellation.*", "/monitoring.*", "/complex.*");
 //                        ,"/entosers.*"
 //                        ,"/campaign.*"
 //                        ,"/monitoring.*"

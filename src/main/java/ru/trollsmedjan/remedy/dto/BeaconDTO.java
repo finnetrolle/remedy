@@ -23,6 +23,16 @@ public class BeaconDTO {
 
     private String primary;
 
+    private Long primaryId;
+
+    public Long getPrimaryId() {
+        return primaryId;
+    }
+
+    public void setPrimaryId(Long primaryId) {
+        this.primaryId = primaryId;
+    }
+
     public String getPrimary() {
         return primary;
     }

@@ -12,6 +12,16 @@ public class PrimaryDTO {
 
     private long id;
 
+    private List<BeaconDTO> beacons;
+
+    public List<BeaconDTO> getBeacons() {
+        return beacons;
+    }
+
+    public void setBeacons(List<BeaconDTO> beacons) {
+        this.beacons = beacons;
+    }
+
     public String getName() {
         return name;
     }
