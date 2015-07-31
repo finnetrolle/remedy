@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.trollsmedjan.remedy.exception.CampaignNotFoundException;
 import ru.trollsmedjan.remedy.exception.ConstellationNotFoundException;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
@@ -14,6 +13,7 @@ import ru.trollsmedjan.remedy.model.entity.Campaign;
 import ru.trollsmedjan.remedy.model.entity.Constellation;
 import ru.trollsmedjan.remedy.model.entity.Entoser;
 import ru.trollsmedjan.remedy.model.entity.PrimaryGoal;
+import ru.trollsmedjan.remedy.resource.exception.entity.CampaignNotFoundException;
 
 import java.util.List;
 

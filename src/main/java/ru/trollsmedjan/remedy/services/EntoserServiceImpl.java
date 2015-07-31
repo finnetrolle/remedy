@@ -5,13 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.trollsmedjan.remedy.exception.CampaignNotFoundException;
-import ru.trollsmedjan.remedy.exception.EntoserNotFoundException;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
 import ru.trollsmedjan.remedy.model.dao.EntoserRepository;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
 import ru.trollsmedjan.remedy.model.entity.Entoser;
+import ru.trollsmedjan.remedy.resource.exception.entity.CampaignNotFoundException;
+import ru.trollsmedjan.remedy.resource.exception.entity.EntoserNotFoundException;
 
 /**
  * Created by finnetrolle on 30.07.2015.

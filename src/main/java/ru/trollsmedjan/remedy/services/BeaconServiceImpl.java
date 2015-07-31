@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.trollsmedjan.remedy.exception.*;
 import ru.trollsmedjan.remedy.model.dao.BeaconRepository;
-import ru.trollsmedjan.remedy.model.dao.EntoserRepository;
 import ru.trollsmedjan.remedy.model.entity.*;
+import ru.trollsmedjan.remedy.resource.exception.entity.BeaconNotFoundException;
+import ru.trollsmedjan.remedy.resource.exception.entity.PrimaryNotFoundException;
 
 /**
  * Created by finnetrolle on 30.07.2015.
@@ -33,7 +34,7 @@ public class BeaconServiceImpl implements BeaconService {
     public Beacon createBeacon(String name, Long primaryGoalId, String location) throws RemedyDataLayerException, RemedyServiceLayerException {
         log.debug("Creating new beacon " + name + " in " + location + " for primary " + primaryGoalId);
         PrimaryGoal primaryGoal = db.getPrimaryGoal(primaryGoalId)
-                .orElseThrow(() -> new PrimaryGoalNotFoundException());
+                .orElseThrow(() -> new PrimaryNotFoundException());
         SolarSystem solarSystem = db.getSolarSystem(location)
                 .orElseThrow(SolarSystemNotFoundException::new);
         if (db.isBeaconExists(name, primaryGoal, solarSystem)) {

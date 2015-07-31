@@ -5,14 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.trollsmedjan.remedy.exception.CampaignNotFoundException;
-import ru.trollsmedjan.remedy.exception.PrimaryGoalNotFoundException;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
 import ru.trollsmedjan.remedy.model.dao.PrimaryGoalRepository;
 import ru.trollsmedjan.remedy.model.entity.Beacon;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
 import ru.trollsmedjan.remedy.model.entity.PrimaryGoal;
+import ru.trollsmedjan.remedy.resource.exception.entity.CampaignNotFoundException;
+import ru.trollsmedjan.remedy.resource.exception.entity.PrimaryNotFoundException;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class PrimaryGoalServiceImpl implements PrimaryGoalService {
     public Long removePrimaryGoal(Long primaryGoalId) throws RemedyDataLayerException, RemedyServiceLayerException {
         log.debug("Removing primary goal " + primaryGoalId);
         PrimaryGoal primaryGoal = db.getPrimaryGoal(primaryGoalId)
-                .orElseThrow(PrimaryGoalNotFoundException::new);
+                .orElseThrow(PrimaryNotFoundException::new);
         List<Beacon> beacons = db.findBeaconsByPrimary(primaryGoal);
         for (Beacon beacon : beacons) {
             beaconService.removeBeacon(beacon.getId());

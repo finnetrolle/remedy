@@ -5,8 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.trollsmedjan.remedy.exception.BeaconNotFoundException;
-import ru.trollsmedjan.remedy.exception.EntoserNotFoundException;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
 import ru.trollsmedjan.remedy.model.dao.BeaconRepository;
@@ -15,6 +13,8 @@ import ru.trollsmedjan.remedy.model.entity.Beacon;
 import ru.trollsmedjan.remedy.model.entity.BeaconStatus;
 import ru.trollsmedjan.remedy.model.entity.Entoser;
 import ru.trollsmedjan.remedy.oldservice.BeaconUtils;
+import ru.trollsmedjan.remedy.resource.exception.entity.BeaconNotFoundException;
+import ru.trollsmedjan.remedy.resource.exception.entity.EntoserNotFoundException;
 
 /**
  * Created by finnetrolle on 30.07.2015.

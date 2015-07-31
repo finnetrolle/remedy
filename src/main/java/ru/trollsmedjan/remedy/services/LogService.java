@@ -3,12 +3,12 @@ package ru.trollsmedjan.remedy.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.trollsmedjan.remedy.exception.CampaignNotFoundException;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.model.dao.LogMessageRepository;
 import ru.trollsmedjan.remedy.model.entity.ActionType;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
 import ru.trollsmedjan.remedy.model.entity.LogMessage;
+import ru.trollsmedjan.remedy.resource.exception.entity.CampaignNotFoundException;
 
 import java.util.Date;
 

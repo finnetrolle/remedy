@@ -10,6 +10,7 @@ import ru.trollsmedjan.remedy.dto.request.CreatePrimaryDTO;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
 import ru.trollsmedjan.remedy.model.entity.PrimaryGoal;
+import ru.trollsmedjan.remedy.resource.exception.entity.CampaignNotFoundException;
 import ru.trollsmedjan.remedy.services.OptionalDataProvider;
 import ru.trollsmedjan.remedy.services.PrimaryGoalService;
 
@@ -38,7 +39,7 @@ public class PrimaryResource {
 
         return Response.ok()
                 .entity(db.findPrimaryByCampaign(db.getCampaign(campaignid)
-                        .orElseThrow(RemedyDataLayerException::new))
+                        .orElseThrow(CampaignNotFoundException::new))
                         .stream()
                         .map(p -> new PrimaryDTO(p.getName(), p.getId()))
                         .collect(Collectors.toList()))
