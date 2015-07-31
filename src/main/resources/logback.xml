@@ -7,7 +7,7 @@
     </appender>
 
     <appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>/ver/log/remedy/dialy.log</File>
+        <File>/var/log/remedy/dialy.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <FileNamePattern>remedy.%d{yyyy-MM-dd}.log</FileNamePattern>
@@ -20,7 +20,7 @@
     </appender>
 
     <logger name="org.springframework" level="info" />
-    <logger name="a1s" level="debug" />
+    <logger name="ru.trollsmedjan" level="debug" />
 
     <root level="warn">
         <appender-ref ref="console" />

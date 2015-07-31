@@ -14,13 +14,13 @@ import ru.trollsmedjan.remedy.model.dao.EntoserRepository;
 import ru.trollsmedjan.remedy.model.entity.Beacon;
 import ru.trollsmedjan.remedy.model.entity.BeaconStatus;
 import ru.trollsmedjan.remedy.model.entity.Entoser;
+import ru.trollsmedjan.remedy.oldservice.BeaconUtils;
 
 /**
  * Created by finnetrolle on 30.07.2015.
  */
 @Service
 public class EngageServiceImpl implements EngageService {
-
 
     @Autowired
     private OptionalDataProvider db;
@@ -55,6 +55,7 @@ public class EngageServiceImpl implements EngageService {
         entoser.setEngaging(beacon);
         beacon.setEntoser(entoser);
         beacon.setStartTime(System.currentTimeMillis());
+        beacon.setTimeToCapture(BeaconUtils.getTimeToEntose(entoser.isT2EntosisModule(), entoser.isCapitalShip(), 2.5));
         beacon.setStatus(BeaconStatus.ENGAGED);
         beaconRepository.save(beacon);
         entoserRepository.save(entoser);
