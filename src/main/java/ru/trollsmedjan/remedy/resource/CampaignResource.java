@@ -22,10 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Created by finnetrolle on 27.07.2015.
- */
-@Api(basePath = "/campaign", value = "Campaigns", description = "Operations with campaigns", produces = "application/json")
 @RestController
 @RequestMapping("/campaign")
 public class CampaignResource {

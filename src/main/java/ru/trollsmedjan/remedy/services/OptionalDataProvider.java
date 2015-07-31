@@ -34,19 +34,19 @@ public class OptionalDataProvider {
     private SolarSystemRepository solarSystemRepository;
 
     public Optional<Constellation> getConstellation(String name) {
-        return Optional.of(constellationRepository.findOne(name));
+        return Optional.ofNullable(constellationRepository.findOne(name));
     }
 
     public Optional<Campaign> getCampaign(Long id) {
-        return Optional.of(campaignRepository.findOne(id));
+        return Optional.ofNullable(campaignRepository.findOne(id));
     }
 
     public Optional<PrimaryGoal> getPrimaryGoal(Long id) {
-        return Optional.of(primaryGoalRepository.findOne(id));
+        return Optional.ofNullable(primaryGoalRepository.findOne(id));
     }
 
     public Optional<Entoser> getEntoser(String name, Campaign campaign) {
-        return Optional.of(entoserRepository.findOneByNameAndCampaign(name, campaign));
+        return Optional.ofNullable(entoserRepository.findOneByNameAndCampaign(name, campaign));
     }
 
     public boolean isEntoserExists(String name, Campaign campaign) {
@@ -67,15 +67,15 @@ public class OptionalDataProvider {
     }
 
     public Optional<Entoser> getEntoser(Long id) {
-        return Optional.of(entoserRepository.findOne(id));
+        return Optional.ofNullable(entoserRepository.findOne(id));
     }
 
     public Optional<Beacon> getBeacon(Long id) {
-        return Optional.of(beaconRepository.findOne(id));
+        return Optional.ofNullable(beaconRepository.findOne(id));
     }
 
     public Optional<SolarSystem> getSolarSystem(String name) {
-        return Optional.of(solarSystemRepository.findOne(name));
+        return Optional.ofNullable(solarSystemRepository.findOne(name));
     }
 
     public List<PrimaryGoal> findPrimaryByCampaign(Campaign campaign) {
