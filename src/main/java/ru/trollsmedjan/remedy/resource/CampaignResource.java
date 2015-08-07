@@ -1,6 +1,5 @@
 package ru.trollsmedjan.remedy.resource;
 
-import com.wordnik.swagger.annotations.Api;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -5,7 +5,6 @@ import ru.trollsmedjan.remedy.model.entity.Beacon;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
 import ru.trollsmedjan.remedy.model.entity.PrimaryGoal;
 import ru.trollsmedjan.remedy.model.entity.SolarSystem;
-import scala.util.parsing.combinator.testing.Str;
 
 import java.util.List;
 
