@@ -40,6 +40,7 @@ public class BeaconResource {
                                @PathVariable Long primaryId)
                                throws RemedyDataLayerException {
 
+
         log.debug("GET beacons for c = " + campaignId + ", p = " + primaryId);
 
         PrimaryGoal primaryGoal = db.getPrimaryGoal(primaryId)
@@ -69,7 +70,6 @@ public class BeaconResource {
                                  throws RemedyDataLayerException, RemedyServiceLayerException {
         log.debug("POST create beacon for c = " + campaignId + ", p = " + primaryId + " and data = " + data);
         Beacon beacon = beaconService.createBeacon(data.getName(), primaryId, data.getLocation());
-
         return Response.ok()
                 .entity(new BeaconDTO(beacon.getId(), beacon.getName(), beacon.getLocation().getName(), beacon.getStatus(), beacon.getPrimaryGoal().getName()))
                 .build();

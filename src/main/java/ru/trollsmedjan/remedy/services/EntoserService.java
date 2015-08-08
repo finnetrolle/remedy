@@ -18,4 +18,5 @@ public interface EntoserService {
     Long removeEntoser(Long entoserId) throws RemedyDataLayerException, RemedyServiceLayerException;
 
 
+    Entoser updateEntoser(long id, String username, String ship, boolean t2EntosisModule, boolean capitalShip, Long campaignId) throws RemedyServiceLayerException;
 }

@@ -64,4 +64,22 @@ public class EntoserServiceImpl implements EntoserService {
         entoserRepository.delete(entoser);
         return entoserId;
     }
+
+    @Override
+    public Entoser updateEntoser(long id, String username, String ship, boolean t2EntosisModule, boolean capitalShip, Long campaignId) throws RemedyServiceLayerException {
+        log.debug("Update entoser [" + id + "] " + username + " for campaign " + campaignId);
+        Campaign campaign = db.getCampaign(campaignId)
+                .orElseThrow(CampaignNotFoundException::new);
+
+        Entoser entoser = db.getEntoser(id).orElseThrow(() -> new RemedyServiceLayerException("Entoser " + id + " is not exists"));
+        entoser.setCampaign(campaign);
+        entoser.setCapitalShip(capitalShip);
+        entoser.setEngaging(null);
+        entoser.setName(username);
+        entoser.setShip(ship);
+        entoser.setT2EntosisModule(t2EntosisModule);
+        entoserRepository.save(entoser);
+        log.debug("entoser updated " + entoser);
+        return entoser;
+    }
 }

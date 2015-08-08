@@ -48,14 +48,25 @@ public class EntoserResource {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public Response createEntoser(@PathVariable Long campaignId, @RequestBody CreateEntoserDTO data)
+    public Response createOrUpdateEntoser(@PathVariable Long campaignId, @RequestBody CreateEntoserDTO data)
             throws RemedyDataLayerException, RemedyServiceLayerException {
-        log.info("POST create entoser {} for campaign {}", data, campaignId);
+        if (data.getId() == 0) {
+            log.info("POST create entoser {} for campaign {}", data, campaignId);
+            return Response.ok()
+                    .entity(buildEntoserDTO(entoserService.createEntoser(data.getUsername(), data.getShip(), data.isT2EntosisModule(),
+                            data.isCapitalShip(), campaignId)))
+                    .build();
+        } else {
+            log.info("POST update entoser {} for campaign {}", data, campaignId);
+            return Response.ok()
+                    .entity(buildEntoserDTO(entoserService.updateEntoser(data.getId(), data.getUsername(), data.getShip(), data.isT2EntosisModule(),
+                            data.isCapitalShip(), campaignId)))
+                    .build();
+        }
 
-        return Response.ok()
-                .entity(buildEntoserDTO(entoserService.createEntoser(data.getUsername(), data.getShip(), data.isT2EntosisModule(),
-                        data.isCapitalShip(), campaignId)))
-                .build();
+
+
+
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

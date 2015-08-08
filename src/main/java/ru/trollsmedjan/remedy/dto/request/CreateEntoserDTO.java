@@ -6,6 +6,7 @@ package ru.trollsmedjan.remedy.dto.request;
 public class CreateEntoserDTO extends AuthDTO {
 
     private String ship;
+    private long id;
     private boolean isT2EntosisModule;
     private boolean isCapitalShip;
 
@@ -13,9 +14,18 @@ public class CreateEntoserDTO extends AuthDTO {
     public String toString() {
         return "CreateEntoserDTO{" +
                 "ship='" + ship + '\'' +
+                ", id=" + id +
                 ", isT2EntosisModule=" + isT2EntosisModule +
                 ", isCapitalShip=" + isCapitalShip +
                 "} " + super.toString();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getShip() {
