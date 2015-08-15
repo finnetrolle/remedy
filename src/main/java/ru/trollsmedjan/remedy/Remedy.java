@@ -17,6 +17,7 @@ public class Remedy {
 
         log.info("Starting remedy application");
         log.info("---== by Finne Trolle ==---");
+
         SpringApplication.run(Remedy.class, args);
 
     }

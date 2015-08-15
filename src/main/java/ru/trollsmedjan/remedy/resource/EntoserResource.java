@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.*;
 import ru.trollsmedjan.remedy.dto.EntoserDTO;
 import ru.trollsmedjan.remedy.dto.request.AuthDTO;
 import ru.trollsmedjan.remedy.dto.request.CreateEntoserDTO;
+import ru.trollsmedjan.remedy.exception.RemedyAuthException;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
 import ru.trollsmedjan.remedy.model.entity.*;
 import ru.trollsmedjan.remedy.services.EntoserService;
 import ru.trollsmedjan.remedy.services.OptionalDataProvider;
+import ru.trollsmedjan.remedy.services.SessionService;
 
 
 import javax.ws.rs.core.Response;
@@ -31,12 +33,19 @@ public class EntoserResource {
     private EntoserService entoserService;
 
     @Autowired
+    private SessionService sessionService;
+
+    @Autowired
     private OptionalDataProvider db;
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Response getEntosers(@PathVariable Long campaignId) throws RemedyDataLayerException{
+    public Response getEntosers(@PathVariable Long campaignId, @RequestHeader("authToken") String token) throws RemedyDataLayerException, RemedyAuthException {
         log.info("GET list of entosers for campaign {}", campaignId);
+
+        if (!sessionService.canReadEntosers(token)) {
+            throw new RemedyAuthException("This user can't read entosers");
+        }
 
         Campaign campaign = db.getCampaign(campaignId)
                 .orElseThrow(RemedyDataLayerException::new);
@@ -48,8 +57,13 @@ public class EntoserResource {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public Response createOrUpdateEntoser(@PathVariable Long campaignId, @RequestBody CreateEntoserDTO data)
-            throws RemedyDataLayerException, RemedyServiceLayerException {
+    public Response createOrUpdateEntoser(@PathVariable Long campaignId, @RequestBody CreateEntoserDTO data, @RequestHeader("authToken") String token)
+            throws RemedyDataLayerException, RemedyServiceLayerException, RemedyAuthException {
+
+        if (!sessionService.canCreateEntosers(token)) {
+            throw new RemedyAuthException("This user can't write entosers");
+        }
+
         if (data.getId() == 0) {
             log.info("POST create entoser {} for campaign {}", data, campaignId);
             return Response.ok()
@@ -71,9 +85,13 @@ public class EntoserResource {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Response removeEntoser(@PathVariable Long campaignId, @PathVariable Long id, @RequestBody AuthDTO auth)
-            throws RemedyDataLayerException, RemedyServiceLayerException {
+    public Response removeEntoser(@PathVariable Long campaignId, @PathVariable Long id, @RequestBody AuthDTO auth, @RequestHeader("authToken") String token)
+            throws RemedyDataLayerException, RemedyServiceLayerException, RemedyAuthException {
         log.info("POST remove entoser {} from campaign {} by {}", id, campaignId, auth);
+
+        if (!sessionService.canDeleteEntosers(token)) {
+            throw new RemedyAuthException("This user can't delete entosers");
+        }
 
         return Response.ok()
                 .entity(entoserService.removeEntoser(id))

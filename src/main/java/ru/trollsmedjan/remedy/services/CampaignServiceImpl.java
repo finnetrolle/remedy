@@ -25,6 +25,9 @@ public class CampaignServiceImpl implements CampaignService {
 
 
     @Autowired
+    private SessionService sessionService;
+
+    @Autowired
     private OptionalDataProvider db;
 
     @Autowired
@@ -65,6 +68,8 @@ public class CampaignServiceImpl implements CampaignService {
         for (Entoser e : entosers) {
             entoserService.removeEntoser(e.getId());
         }
+
+        sessionService.removeSessionsByCampaign(campaign);
 
         long id = campaign.getId();
         campaignRepository.delete(campaign);

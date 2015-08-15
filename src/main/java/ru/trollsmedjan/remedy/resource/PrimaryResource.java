@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.*;
 import ru.trollsmedjan.remedy.dto.PrimaryDTO;
 import ru.trollsmedjan.remedy.dto.request.AuthDTO;
 import ru.trollsmedjan.remedy.dto.request.CreatePrimaryDTO;
+import ru.trollsmedjan.remedy.exception.RemedyAuthException;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
 import ru.trollsmedjan.remedy.model.entity.PrimaryGoal;
 import ru.trollsmedjan.remedy.resource.exception.entity.CampaignNotFoundException;
 import ru.trollsmedjan.remedy.services.OptionalDataProvider;
 import ru.trollsmedjan.remedy.services.PrimaryGoalService;
+import ru.trollsmedjan.remedy.services.SessionService;
 
 import javax.ws.rs.core.Response;
 import java.util.stream.Collectors;
@@ -32,10 +34,17 @@ public class PrimaryResource {
     @Autowired
     private OptionalDataProvider db;
 
+    @Autowired
+    private SessionService sessionService;
+
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Response getPrimaries(@PathVariable Long campaignid) throws RemedyDataLayerException {
+    public Response getPrimaries(@PathVariable Long campaignid, @RequestHeader("authToken") String token) throws RemedyDataLayerException, RemedyAuthException {
         log.info("GET primaries for {}", campaignid);
+
+        if (!sessionService.canReadPrimaries(token)) {
+            throw new RemedyAuthException("This user can't ream primaries");
+        }
 
         return Response.ok()
                 .entity(db.findPrimaryByCampaign(db.getCampaign(campaignid)
@@ -60,9 +69,13 @@ public class PrimaryResource {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public Response createPrimary(@PathVariable Long campaignid, @RequestBody CreatePrimaryDTO data)
-            throws RemedyDataLayerException{
+    public Response createPrimary(@PathVariable Long campaignid, @RequestBody CreatePrimaryDTO data, @RequestHeader("authToken") String token)
+            throws RemedyDataLayerException, RemedyAuthException {
         log.info("POST create primary {} in campaign {}", data, campaignid);
+
+        if (!sessionService.canCreatePrimaries(token)) {
+            throw new RemedyAuthException("this user can't create primary");
+        }
 
         PrimaryGoal p = primaryGoalService.createPrimaryGoal(data.getPrimaryName(), campaignid);
 
@@ -73,9 +86,13 @@ public class PrimaryResource {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Response removePrimary(@PathVariable Long campaignid, @PathVariable Long id, @RequestBody AuthDTO data)
-            throws RemedyDataLayerException, RemedyServiceLayerException {
+    public Response removePrimary(@PathVariable Long campaignid, @PathVariable Long id, @RequestBody AuthDTO data, @RequestHeader("authToken") String token)
+            throws RemedyDataLayerException, RemedyServiceLayerException, RemedyAuthException {
         log.info("POST remove primary {} from campaign {} by {}", id, campaignid, data);
+
+        if (!sessionService.canDeletePrimaries(token)) {
+            throw new RemedyAuthException("This user can't remocve primary");
+        }
 
         return Response.ok()
                 .entity(primaryGoalService.removePrimaryGoal(id))

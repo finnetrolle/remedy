@@ -10,7 +10,6 @@ public class TokenDTO {
     private String token;
     private String username;
     private Date created;
-    private Date timeToLive;
 
     public String getToken() {
         return token;
@@ -36,11 +35,4 @@ public class TokenDTO {
         this.created = created;
     }
 
-    public Date getTimeToLive() {
-        return timeToLive;
-    }
-
-    public void setTimeToLive(Date timeToLive) {
-        this.timeToLive = timeToLive;
-    }
 }

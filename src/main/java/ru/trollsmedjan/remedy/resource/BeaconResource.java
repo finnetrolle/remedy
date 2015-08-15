@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.trollsmedjan.remedy.dto.BeaconDTO;
 import ru.trollsmedjan.remedy.dto.request.CreateBeaconDTO;
+import ru.trollsmedjan.remedy.exception.RemedyAuthException;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
 import ru.trollsmedjan.remedy.model.entity.*;
 import ru.trollsmedjan.remedy.services.BeaconService;
 import ru.trollsmedjan.remedy.services.LogService;
 import ru.trollsmedjan.remedy.services.OptionalDataProvider;
+import ru.trollsmedjan.remedy.services.SessionService;
 
 import javax.ws.rs.core.Response;
 import java.util.stream.Collectors;
@@ -32,16 +34,22 @@ public class BeaconResource {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
+    private SessionService sessionService;
+
+    @Autowired
     private OptionalDataProvider db;
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public Response getBeacons(@PathVariable Long campaignId,
-                               @PathVariable Long primaryId)
-                               throws RemedyDataLayerException {
+                               @PathVariable Long primaryId, @RequestHeader("authToken") String token)
+            throws RemedyDataLayerException, RemedyAuthException {
 
 
         log.debug("GET beacons for c = " + campaignId + ", p = " + primaryId);
+        if (!sessionService.canReadBeacons(token)) {
+            throw new RemedyAuthException("This operation is not allowed for current user");
+        }
 
         PrimaryGoal primaryGoal = db.getPrimaryGoal(primaryId)
                 .orElseThrow(() -> new RemedyDataLayerException());
@@ -66,9 +74,12 @@ public class BeaconResource {
     @ResponseBody
     public Response createBeacon(@PathVariable Long campaignId,
                                  @PathVariable Long primaryId,
-                                 @RequestBody CreateBeaconDTO data)
-                                 throws RemedyDataLayerException, RemedyServiceLayerException {
+                                 @RequestBody CreateBeaconDTO data, @RequestHeader("authToken") String token)
+            throws RemedyDataLayerException, RemedyServiceLayerException, RemedyAuthException {
         log.debug("POST create beacon for c = " + campaignId + ", p = " + primaryId + " and data = " + data);
+        if (!sessionService.canCreateBeacons(token)) {
+            throw new RemedyAuthException("this user can't create beacons");
+        }
         Beacon beacon = beaconService.createBeacon(data.getName(), primaryId, data.getLocation());
         return Response.ok()
                 .entity(new BeaconDTO(beacon.getId(), beacon.getName(), beacon.getLocation().getName(), beacon.getStatus(), beacon.getPrimaryGoal().getName()))
@@ -79,9 +90,13 @@ public class BeaconResource {
     @ResponseBody
     public Response deleteBeacon(@PathVariable Long campaignId,
                                  @PathVariable Long primaryId,
-                                 @PathVariable Long id)
-            throws RemedyDataLayerException, RemedyServiceLayerException {
+                                 @PathVariable Long id, @RequestHeader("authToken") String token)
+            throws RemedyDataLayerException, RemedyServiceLayerException, RemedyAuthException {
         log.debug("POST remove beacon for c = " + campaignId + ", p = " + primaryId + " and id = " + id);
+
+        if (!sessionService.canDeleteBeacons(token)) {
+            throw new RemedyAuthException("This user can't delete beacons");
+        }
 
         return Response.ok()
                 .entity(beaconService.removeBeacon(id))
@@ -92,9 +107,13 @@ public class BeaconResource {
     @ResponseBody
     public Response reportEnemyAttack(@PathVariable Long campaignId,
                                       @PathVariable Long primaryId,
-                                      @PathVariable Long id)
-            throws RemedyDataLayerException, RemedyServiceLayerException {
+                                      @PathVariable Long id, @RequestHeader("authToken") String token)
+            throws RemedyDataLayerException, RemedyServiceLayerException, RemedyAuthException {
         log.debug("POST report enemy attack for c = " + campaignId + ", p = " + primaryId + " and deacon " + id);
+
+        if (!sessionService.canReportEnemies(token)) {
+            throw new RemedyAuthException("This user can't report enemy");
+        }
 
         beaconService.reportEnemyAttack(id);
 
@@ -105,9 +124,13 @@ public class BeaconResource {
     @ResponseBody
     public Response defendEnemyAttack(@PathVariable Long campaignId,
                                       @PathVariable Long primaryId,
-                                      @PathVariable Long id)
-            throws RemedyDataLayerException, RemedyServiceLayerException {
+                                      @PathVariable Long id, @RequestHeader("authToken") String token)
+            throws RemedyDataLayerException, RemedyServiceLayerException, RemedyAuthException {
         log.debug("POST defended for c = " + campaignId + ", p = " + primaryId + " and deacon " + id);
+
+        if (!sessionService.canReportEnemies(token)) {
+            throw new RemedyAuthException("This user can't report defence");
+        }
 
         beaconService.reportBeaconDefended(id);
 

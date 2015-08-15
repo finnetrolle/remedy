@@ -9,6 +9,8 @@ public class CreateTokenDTO {
 
     private String keyword;
 
+    private Long campaignId;
+
     public String getUsername() {
         return username;
     }
@@ -23,5 +25,13 @@ public class CreateTokenDTO {
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;
+    }
+
+    public Long getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(Long campaignId) {
+        this.campaignId = campaignId;
     }
 }

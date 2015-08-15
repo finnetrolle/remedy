@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import ru.trollsmedjan.remedy.dto.CampaignDTO;
 import ru.trollsmedjan.remedy.dto.request.AuthDTO;
 import ru.trollsmedjan.remedy.dto.request.StartCampaignDTO;
+import ru.trollsmedjan.remedy.exception.RemedyAuthException;
 import ru.trollsmedjan.remedy.exception.RemedyDataLayerException;
 import ru.trollsmedjan.remedy.exception.RemedyServiceLayerException;
 import ru.trollsmedjan.remedy.model.entity.Campaign;
 import ru.trollsmedjan.remedy.services.CampaignService;
 import ru.trollsmedjan.remedy.services.OptionalDataProvider;
+import ru.trollsmedjan.remedy.services.SessionService;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
@@ -44,10 +46,14 @@ public class CampaignResource {
     @Autowired
     private CampaignService campaignService;
 
+    @Autowired
+    private SessionService sessionService;
+
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Response getCampaigns() {
+    public Response getCampaigns(@RequestHeader("authToken") String token) {
         log.info("GET campaigns");
+
         return Response.ok()
                 .entity(db.findCampaigns().stream().map(c -> new CampaignDTO(c.getName(), c.getConstellation().getName(), c.getId())).collect(Collectors.toList()))
                 .build();
@@ -55,8 +61,13 @@ public class CampaignResource {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public Response startCampaign(@RequestBody StartCampaignDTO startCampaignDTO) throws RemedyDataLayerException {
+    public Response startCampaign(@RequestBody StartCampaignDTO startCampaignDTO, @RequestHeader("authToken") String token) throws RemedyDataLayerException, RemedyAuthException {
         log.info("start campaign " + startCampaignDTO);
+
+        if (!sessionService.canCreateCampaigns(token)) {
+            throw new RemedyAuthException("This user can't create campaign");
+        }
+
 
         if (!checkHardcodedUser(startCampaignDTO.getUsername())) {
             log.debug("UNAUTHORIZED");
@@ -71,9 +82,13 @@ public class CampaignResource {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Response stopCampaign(@PathVariable Long id, @RequestBody AuthDTO data)
-            throws RemedyDataLayerException, RemedyServiceLayerException {
+    public Response stopCampaign(@PathVariable Long id, @RequestBody AuthDTO data, @RequestHeader("authToken") String token)
+            throws RemedyDataLayerException, RemedyServiceLayerException, RemedyAuthException {
         log.info("Stopping campaign " + id);
+
+        if (!sessionService.canDeleteCampaigns(token)) {
+            throw new RemedyAuthException("This user can't stop campaigns");
+        }
 
         if (!checkHardcodedUser(data.getUsername())) {
             log.debug("UNAUTHORIZED");
