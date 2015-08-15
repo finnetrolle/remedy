@@ -1,7 +1,5 @@
 package ru.trollsmedjan.remedy.model.entity;
 
-import com.sun.istack.internal.Nullable;
-
 import javax.persistence.*;
 
 /**
